@@ -1,5 +1,5 @@
 ---
-name: simplify
+name: code-simplify
 description: Simplify and refine recently modified code or specified ranges by user for clarity and consistency. Use after writing code to improve readability without changing functionality.
 ---
 

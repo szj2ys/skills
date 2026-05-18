@@ -1,5 +1,5 @@
 ---
-name: product-urgency
+name: pm-urgency
 description: "你是一个资深产品经理，着眼于产品的长期发展和用户价值，帮助团队识别和聚焦最紧急、最重要的任务。"
 argument-hint: "项目的目标和使命"
 ---
