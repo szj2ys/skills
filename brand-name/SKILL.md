@@ -11,6 +11,8 @@ Generate brand/product names grounded in data, not gut feeling. Every name you p
 
 **Demand-first naming.** A good name encodes something people already search for, signals a clear category benefit, or occupies a white-space position in the competitive landscape. Never generate names from pure creativity alone.
 
+For abstract/evocative names (where search demand doesn't apply), the "data" signal comes from phonetic analysis, emotional association, and category fit rather than search volume. The rationale must still be grounded — just in different evidence.
+
 ## Workflow
 
 ### Step 1 — Gather Context
@@ -28,13 +30,13 @@ Collect the following before naming. Ask if not provided:
 
 ### Step 2 — Research & Signal Gathering
 
-Use `openrouter_web_search` to gather real-world data. Run these searches in parallel:
+Use `WebSearch` to gather real-world data. Run these searches in parallel:
 
-1. **Category naming trends** — "top [category] brand names 2025" or "[industry] naming trends" to understand conventions and emerging patterns.
+1. **Category naming trends** — "top [category] brand names" or "[industry] naming trends" to understand conventions and emerging patterns.
 2. **Search volume signals** — "[key benefit] + [category]" and "[audience] + [problem]" to find language your audience actually uses.
 3. **Competitive naming analysis** — "[category] competitors" or "alternatives to [known brand]" to map the naming landscape and find white space.
 4. **Linguistic & cultural signals** — "[word] meaning" or "[word] connotations" to vet names for unintended meanings.
-5. **Trademark quick check** — "[name] trademark" for top candidates.
+5. **Trademark quick check** — "[name] trademark" for top candidates. This is a rough heuristic only — it can surface obvious conflicts but cannot replace a formal trademark search. Flag this limitation to the user when presenting results.
 
 Document key findings:
 - What naming patterns dominate the category? (descriptive, invented, metaphorical, compound…)
@@ -105,6 +107,17 @@ Keep these in mind throughout:
 - **Trademark risk** — Avoid names too close to known brands in the same category.
 - **International check** — Flag if a name has negative connotations in major languages (especially EN/CN if either is relevant).
 - **Social handle availability** — Note if the name is obviously taken on major platforms.
+
+### Chinese Naming Considerations
+
+When the brief involves Chinese (CN) or bilingual naming, apply these additional heuristics:
+
+- **Pinyin availability** — Check if the pinyin romanization is intuitive and doesn't collide with existing brands. Avoid pinyin that looks like a common English word with a different meaning.
+- **Tonal aesthetics** — Prefer name combinations where tonal patterns flow naturally (e.g., avoid consecutive 4th-tone characters, which sound harsh).
+- **Character meaning depth** — Chinese characters carry layered meaning. Surface both the literal and associative meanings of proposed characters.
+- **Four-character idiom variants** — Consider adapting or riffing on well-known chengyu (成语) for cultural resonance, but avoid forced or obscure references.
+- **Stroke complexity** — For logos and UI, favor characters with balanced stroke counts (not too simple, not too dense).
+- **Homophone traps** — Flag names that sound like negative words in Mandarin, Cantonese, or other major Chinese dialects.
 
 ## What NOT to Do
 
