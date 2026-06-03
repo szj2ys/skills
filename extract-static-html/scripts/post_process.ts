@@ -222,20 +222,29 @@ function extractCssUrls(text: string): CssUrlRef[] {
 // Local path resolution
 // ---------------------------------------------------------------------------
 function resolveLocalFile(localPath: string, baseDir: string): string | null {
-  const candidates = [localPath];
-  if (baseDir) {
-    candidates.push(path.join(baseDir, localPath.replace(/^\//, '')));
+  const base = baseDir || process.cwd();
+  let normalizedBase: string;
+  try {
+    normalizedBase = fs.realpathSync(base);
+  } catch {
+    return null;
   }
 
-  for (const candidate of candidates) {
-    try {
-      if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
-        return candidate;
-      }
-    } catch {
-      // Permission errors, etc. — skip
-    }
+  const cleanLocalPath = localPath.replace(/^\/+/, '');
+  const targetPath = path.resolve(normalizedBase, cleanLocalPath);
+  
+  if (!targetPath.startsWith(normalizedBase)) {
+    return null;
   }
+
+  try {
+    if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
+      return targetPath;
+    }
+  } catch {
+    // Permission errors, etc. — skip
+  }
+  
   return null;
 }
 

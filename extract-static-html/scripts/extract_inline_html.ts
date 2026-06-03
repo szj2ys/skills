@@ -34,6 +34,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import https from 'node:https';
 import http from 'node:http';
+import dns from 'node:dns/promises';
 import type { Node } from '@babel/types';
 
 // ---------------------------------------------------------------------------
@@ -248,7 +249,7 @@ function isImageUrl(url: string): boolean {
  * URLs parsed from HTML files could be attacker-controlled, so we must
  * ensure they only target public internet hosts.
  */
-function isSafeUrl(parsed: URL): boolean {
+async function isSafeUrl(parsed: URL): Promise<boolean> {
   // Only allow http and https protocols
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
     return false;
@@ -261,19 +262,32 @@ function isSafeUrl(parsed: URL): boolean {
     return false;
   }
 
-  // Block private/reserved IPv4 ranges
-  const ipv4Match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (ipv4Match) {
-    const [, a, b] = ipv4Match.map(Number);
-    if (
-      a === 127 ||          // 127.0.0.0/8  (loopback)
-      a === 10 ||           // 10.0.0.0/8   (private)
-      a === 0 ||            // 0.0.0.0/8    (unspecified)
-      (a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12 (private)
-      (a === 192 && b === 168) ||          // 192.168.0.0/16 (private)
-      (a === 169 && b === 254)             // 169.254.0.0/16 (link-local)
-    ) {
-      return false;
+  let addresses: string[];
+  try {
+    const result = await dns.lookup(hostname);
+    addresses = [result.address];
+  } catch (err) {
+    console.warn(`  WARN: DNS resolution failed for ${hostname}`);
+    return false;
+  }
+
+  for (const address of addresses) {
+    const ipv4Match = address.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (ipv4Match) {
+      const [, a, b] = ipv4Match.map(Number);
+      if (
+        a === 127 ||
+        a === 10 ||
+        a === 0 ||
+        (a === 172 && b >= 16 && b <= 31) ||
+        (a === 192 && b === 168) ||
+        (a === 169 && b === 254)
+      ) {
+        return false;
+      }
+    }
+    if (address === '::1' || address.startsWith('fc00:') || address.startsWith('fd00:') || address.startsWith('fe80:')) {
+        return false;
     }
   }
 
@@ -284,7 +298,7 @@ function isSafeUrl(parsed: URL): boolean {
 // referenced in HTML source files and embeds them as base64 data URIs to
 // produce self-contained HTML snapshots. URLs are validated by isSafeUrl()
 // to block SSRF against private/internal networks.  [CodeQL js/file-access-to-http]
-function fetchAndEncode(url: string, timeout: number, redirectCount = 0): Promise<string> {
+async function fetchAndEncode(url: string, timeout: number, redirectCount = 0): Promise<string> {
   if (imgCache.has(url)) return Promise.resolve(imgCache.get(url)!);
   if (!isImageUrl(url)) {
     imgCache.set(url, url);
@@ -314,7 +328,8 @@ function fetchAndEncode(url: string, timeout: number, redirectCount = 0): Promis
     }
 
     // SSRF protection: block requests to private/internal networks
-    if (!isSafeUrl(parsedUrl)) {
+    const isSafe = await isSafeUrl(parsedUrl);
+    if (!isSafe) {
       const fallback =
         'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
       console.warn(`  WARN: Blocked request to non-public URL: ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
