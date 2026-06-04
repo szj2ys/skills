@@ -233,13 +233,22 @@ function resolveLocalFile(localPath: string, baseDir: string): string | null {
   const cleanLocalPath = localPath.replace(/^\/+/, '');
   const targetPath = path.resolve(normalizedBase, cleanLocalPath);
   
-  if (!targetPath.startsWith(normalizedBase)) {
+  // Resolve symlinks on the target path BEFORE checking if it's within the base dir
+  let realTargetPath: string;
+  try {
+    realTargetPath = fs.realpathSync(targetPath);
+  } catch {
+    // Path doesn't exist or is inaccessible
     return null;
   }
 
+  if (!realTargetPath.startsWith(normalizedBase)) {
+    return null; // Path traversal attempted via symlinks or ../
+  }
+
   try {
-    if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
-      return targetPath;
+    if (fs.existsSync(realTargetPath) && fs.statSync(realTargetPath).isFile()) {
+      return realTargetPath;
     }
   } catch {
     // Permission errors, etc. — skip

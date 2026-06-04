@@ -249,49 +249,49 @@ function isImageUrl(url: string): boolean {
  * URLs parsed from HTML files could be attacker-controlled, so we must
  * ensure they only target public internet hosts.
  */
-async function isSafeUrl(parsed: URL): Promise<boolean> {
+async function isSafeUrl(parsed: URL): Promise<{ isSafe: boolean, ip?: string, family?: number }> {
   // Only allow http and https protocols
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    return false;
+    return { isSafe: false };
   }
 
   const hostname = parsed.hostname.toLowerCase();
 
   // Block localhost variants
   if (hostname === 'localhost' || hostname === '[::1]') {
-    return false;
+    return { isSafe: false };
   }
 
-  let addresses: string[];
+  let address: string;
+  let family: number;
   try {
     const result = await dns.lookup(hostname);
-    addresses = [result.address];
+    address = result.address;
+    family = result.family;
   } catch (err) {
     console.warn(`  WARN: DNS resolution failed for ${hostname}`);
-    return false;
+    return { isSafe: false };
   }
 
-  for (const address of addresses) {
-    const ipv4Match = address.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-    if (ipv4Match) {
-      const [, a, b] = ipv4Match.map(Number);
-      if (
-        a === 127 ||
-        a === 10 ||
-        a === 0 ||
-        (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168) ||
-        (a === 169 && b === 254)
-      ) {
-        return false;
-      }
-    }
-    if (address === '::1' || address.startsWith('fc00:') || address.startsWith('fd00:') || address.startsWith('fe80:')) {
-        return false;
+  const ipv4Match = address.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipv4Match) {
+    const [, a, b] = ipv4Match.map(Number);
+    if (
+      a === 127 ||
+      a === 10 ||
+      a === 0 ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168) ||
+      (a === 169 && b === 254)
+    ) {
+      return { isSafe: false };
     }
   }
+  if (address === '::1' || address.startsWith('fc00:') || address.startsWith('fd00:') || address.startsWith('fe80:')) {
+      return { isSafe: false };
+  }
 
-  return true;
+  return { isSafe: true, ip: address, family };
 }
 
 // Intentional outbound requests: this function fetches remote images
@@ -299,10 +299,10 @@ async function isSafeUrl(parsed: URL): Promise<boolean> {
 // produce self-contained HTML snapshots. URLs are validated by isSafeUrl()
 // to block SSRF against private/internal networks.  [CodeQL js/file-access-to-http]
 async function fetchAndEncode(url: string, timeout: number, redirectCount = 0): Promise<string> {
-  if (imgCache.has(url)) return Promise.resolve(imgCache.get(url)!);
+  if (imgCache.has(url)) return imgCache.get(url)!;
   if (!isImageUrl(url)) {
     imgCache.set(url, url);
-    return Promise.resolve(url);
+    return url;
   }
 
   // Redirect-loop protection
@@ -311,39 +311,41 @@ async function fetchAndEncode(url: string, timeout: number, redirectCount = 0): 
       'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     console.warn(`  WARN: Too many redirects (${MAX_REDIRECTS}) <- ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
     imgCache.set(url, fallback);
-    return Promise.resolve(fallback);
+    return fallback;
+  }
+
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    const fallback =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    console.warn(`  WARN: Invalid URL: ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
+    imgCache.set(url, fallback);
+    return fallback;
+  }
+
+  // SSRF protection: block requests to private/internal networks
+  const safeCheck = await isSafeUrl(parsedUrl);
+  if (!safeCheck.isSafe || !safeCheck.ip) {
+    const fallback =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    console.warn(`  WARN: Blocked request to non-public URL: ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
+    imgCache.set(url, fallback);
+    return fallback;
   }
 
   return new Promise((resolve) => {
-    let parsedUrl: URL;
-    try {
-      parsedUrl = new URL(url);
-    } catch {
-      const fallback =
-        'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-      console.warn(`  WARN: Invalid URL: ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
-      imgCache.set(url, fallback);
-      resolve(fallback);
-      return;
-    }
-
-    // SSRF protection: block requests to private/internal networks
-    const isSafe = await isSafeUrl(parsedUrl);
-    if (!isSafe) {
-      const fallback =
-        'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-      console.warn(`  WARN: Blocked request to non-public URL: ${url.slice(0, 70).replace(/\n|\r/g, '')}...`);
-      imgCache.set(url, fallback);
-      resolve(fallback);
-      return;
-    }
-
     const client = parsedUrl.protocol === 'https:' ? https : http;
     const req = client.get(
       url,
       {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SnapshotBot/2.0)' },
         timeout,
+        lookup: (hostname: string, options: any, callback: any) => {
+           // Prevent DNS rebinding by using the already validated IP
+           callback(null, safeCheck.ip!, safeCheck.family || 4);
+        }
       },
       (resp) => {
         if (
