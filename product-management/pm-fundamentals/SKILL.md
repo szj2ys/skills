@@ -1,5 +1,5 @@
 ---
-name: product-management
+name: pm-fundamentals
 description: Help with product management tasks including vision, roadmapping, PRDs, specs, metrics, shipping, scoping, competitive analysis, PMF, and product strategy. Use when the user needs PM frameworks, prioritization guidance, roadmap planning, product decision-making, trade-off evaluation, working backwards, or help with any product leadership challenge.
 ---
 

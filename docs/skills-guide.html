@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills 使用指南 — 400+ skills，按场景组织</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #6b7280;
+    --accent: #2563eb; --accent-light: #dbeafe;
+    --border: #e5e7eb; --card-bg: #f9fafb; --code-bg: #f3f4f6;
+    --step-bg: #f0f9ff; --step-border: #bae6fd;
+    --warn-bg: #fef3c7; --warn-border: #fcd34d;
+    --green: #059669; --green-light: #d1fae5;
+    --purple: #7c3aed; --purple-light: #ede9fe;
+    --orange: #ea580c; --orange-light: #ffedd5;
+    --pink: #db2777; --pink-light: #fce7f3;
+    --cyan: #0891b2; --cyan-light: #cffafe;
+    --slate: #475569; --slate-light: #f1f5f9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a; --fg: #e2e8f0; --muted: #94a3b8;
+      --accent: #60a5fa; --accent-light: #1e3a5f;
+      --border: #334155; --card-bg: #1e293b; --code-bg: #1e293b;
+      --step-bg: #0c2d48; --step-border: #1e4d8c;
+      --warn-bg: #422006; --warn-border: #92400e;
+      --green-light: #064e3b; --purple-light: #2e1065;
+      --orange-light: #431407; --pink-light: #500724;
+      --cyan-light: #083344; --slate-light: #1e293b;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.75;
+    max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 6rem;
+  }
+  h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+  h2 { font-size: 1.35rem; font-weight: 700; margin: 3rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); letter-spacing: -0.01em; }
+  h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+  h4 { font-size: 0.95rem; font-weight: 600; margin: 1rem 0 0.3rem; }
+  p { margin-bottom: 0.75rem; }
+  ol, ul { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); font-size: 1.05rem; margin-bottom: 2rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--code-bg); padding: 0.12em 0.4em; border-radius: 4px; font-size: 0.88em; font-family: "SF Mono", "Fira Code", monospace; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 0.75rem 0 1.25rem; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: none; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-weight: 600; background: var(--card-bg); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+
+  /* TOC */
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 2.5rem; }
+  .toc h2 { margin-top: 0; border: none; padding: 0; font-size: 1.1rem; }
+  .toc ol { padding-left: 1.4rem; margin: 0; }
+  .toc li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+
+  /* Flow */
+  .flow { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 0.75rem 0 1.5rem; overflow-x: auto; }
+  .flow-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+  .flow-row:last-child { margin-bottom: 0; }
+  .flow-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .step {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    border-radius: 6px; padding: 0.3rem 0.7rem; font-size: 0.85rem; font-weight: 600;
+    white-space: nowrap; border: 1px solid;
+  }
+  .arrow { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
+  .s-eng { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .s-mkt { background: var(--pink-light); border-color: var(--pink); color: var(--pink); }
+  .s-dsn { background: var(--purple-light); border-color: var(--purple); color: var(--purple); }
+  .s-pm  { background: var(--orange-light); border-color: var(--orange); color: var(--orange); }
+  .s-prd { background: var(--warn-bg); border-color: var(--warn-border); color: #92400e; }
+  .s-tc  { background: var(--cyan-light); border-color: var(--cyan); color: var(--cyan); }
+  .s-uni { background: var(--slate-light); border-color: var(--slate); color: var(--slate); }
+  .s-opt { background: var(--card-bg); border-color: var(--border); color: var(--muted); font-weight: 500; font-style: italic; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; margin: 1rem 0 1.5rem; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
+  .card h4 { font-size: 0.88rem; margin-bottom: 0.25rem; }
+  .card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+  /* Scenario block */
+  .scenario { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .scenario h3 { margin-top: 0; }
+  .trigger { font-style: italic; color: var(--muted); font-size: 0.88rem; margin-bottom: 0.75rem; }
+
+  /* Callout */
+  .note { background: var(--warn-bg); border-left: 3px solid var(--warn-border); padding: 0.65rem 1rem; border-radius: 0 6px 6px 0; margin: 1rem 0; font-size: 0.88rem; }
+  .tip { background: var(--green-light); border-left: 3px solid var(--green); padding: 0.65rem 1rem; border-radius: 0 6px 6px 0; margin: 1rem 0; font-size: 0.88rem; }
+
+  /* Phase label */
+  .phase { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.12em 0.5em; border-radius: 4px; margin-right: 0.25rem; }
+  .p-define { background: var(--accent-light); color: var(--accent); }
+  .p-plan { background: var(--purple-light); color: var(--purple); }
+  .p-build { background: var(--green-light); color: var(--green); }
+  .p-review { background: var(--orange-light); color: var(--orange); }
+  .p-ship { background: var(--pink-light); color: var(--pink); }
+  .p-growth { background: var(--warn-bg); color: #92400e; }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem 1rem 4rem; }
+    h1 { font-size: 1.5rem; } h2 { font-size: 1.2rem; }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .step { font-size: 0.78rem; padding: 0.2rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Skills 使用指南</h1>
+<p class="sub">400+ skills，17 个分类 — 按场景组织，知道什么时候用什么、怎么串起来。</p>
+
+<!-- TOC -->
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#install">安装</a></li>
+    <li><a href="#how">怎么用这份指南</a></li>
+    <li><a href="#decision">第一步：判断你该走哪条路</a></li>
+    <li><a href="#eng-new">场景 A：做新功能</a></li>
+    <li><a href="#eng-bug">场景 B：修 Bug / 定位问题</a></li>
+    <li><a href="#eng-refactor">场景 C：重构 / 改善代码质量</a></li>
+    <li><a href="#marketing">场景 D：做增长（SEO / 内容 / 发布）</a></li>
+    <li><a href="#design">场景 E：做设计（UI / 改版 / 图片）</a></li>
+    <li><a href="#product">场景 F：做产品（需求 / 规划 / 评审）</a></li>
+    <li><a href="#session">场景 G：管理 Session（保存 / 交接 / 回顾）</a></li>
+    <li><a href="#toolchains">场景 H：使用特定语言/框架</a></li>
+    <li><a href="#documents">场景 I：文档生成</a></li>
+    <li><a href="#cross">场景 J：跨领域组合流程</a></li>
+    <li><a href="#devtools-advanced">进阶：DevTools 高价值 skill</a></li>
+    <li><a href="#categories">全部分类速查</a></li>
+    <li><a href="#principles">pstack 原则（19 条工程信条）</a></li>
+    <li><a href="#sources">来源说明</a></li>
+  </ol>
+</nav>
+
+<!-- ========== INSTALL ========== -->
+<h2 id="install">安装</h2>
+<pre><code>npx skills add szj2ys/skills</code></pre>
+<p>这会把所有 skills 下载到你当前项目的 <code>.agents/skills/</code> 目录。之后在 Cursor、Codex 或其他支持 skills 的 AI 编码工具里就能直接调用。</p>
+<p>如果你只想用部分分类，可以只安装特定子目录（取决于你的工具是否支持）。</p>
+
+<!-- ========== HOW ========== -->
+<h2 id="how">怎么用这份指南</h2>
+<p>这份文档解决三个问题：</p>
+<ol>
+  <li><strong>场景识别</strong> — 我现在要做的事属于哪种场景？</li>
+  <li><strong>Skill 选择</strong> — 这个场景该用哪些 skill？</li>
+  <li><strong>执行顺序</strong> — 这些 skill 按什么顺序串起来？</li>
+</ol>
+<div class="note"><strong>提示：</strong>不是每个任务都需要走完所有步骤。简单 bug 只需要 <code>diagnose</code> + <code>tdd</code> + <code>commit</code>；一个全新功能才需要走完整条线。按需取用，不要教条。</div>
+<div class="tip"><strong>元 skill：</strong><code>using-agent-skills</code>（在 <code>productivity/</code> 里）是一棵完整的工程决策树，能帮你自动判断当前任务该用哪个 skill。它是这份指南的机器可读版本。</div>
+
+<!-- ========== DECISION TREE ========== -->
+<h2 id="decision">第一步：判断你该走哪条路</h2>
+<p>拿到一个任务，先回答左边的问题，沿着箭头走就能找到对应的场景。</p>
+
+<div class="flow">
+  <p class="flow-label">任务到来</p>
+  <div class="flow-row">
+    <span class="step s-eng">不知道要做什么？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">grill-me / interview-me</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">idea-refine</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">spec-driven-development</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng">要做一个新功能？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">场景 A</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng">东西坏了？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">场景 B</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng">代码太乱想重构？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">场景 C</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-mkt">要搞 SEO / 内容 / 增长？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">场景 D</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-dsn">要做 UI / 设计 / 改版？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn">场景 E</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-pm">要写 PRD / 排优先级 / 做规划？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">场景 F</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-prd">要保存上下文 / 交接 / 复盘？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-prd">场景 G</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-tc">用特定语言/框架写代码？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-tc">场景 H</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-uni">要生成 PDF / 文档 / slides？</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-uni">场景 I</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO A: NEW FEATURE ========== -->
+<h2 id="eng-new">场景 A：做新功能（从需求到上线）</h2>
+<p class="trigger">触发词：「做个 XX 功能」「加个 XX」「实现 XX」</p>
+
+<div class="flow">
+  <p class="flow-label">完整流程</p>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-define">定义</span>spec-driven-development</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-plan">规划</span>planning-and-task-breakdown</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-build">构建</span>context-engineering</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-build">构建</span>incremental-implementation</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-build">构建</span>tdd</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-review">审查</span>code-review-and-quality</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-review">审查</span>code-simplify</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>commit</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-ship">发布</span>pull-requests / ship</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>deploy-to-vercel / land-and-deploy</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>canary</span>
+  </div>
+</div>
+
+<h3>各步骤说明</h3>
+<table>
+  <tr><th>步骤</th><th>用什么</th><th>触发词</th><th>可以跳过吗</th></tr>
+  <tr><td><span class="phase p-define">定义</span></td><td><code>spec-driven-development</code></td><td>需求模糊、改动大、涉及架构决策</td><td>小改动可以跳过</td></tr>
+  <tr><td><span class="phase p-define">定义</span></td><td><code>grill-with-docs</code></td><td>想验证方案是否合理</td><td>大多数情况可以跳过</td></tr>
+  <tr><td><span class="phase p-plan">规划</span></td><td><code>planning-and-task-breakdown</code></td><td>任务 &gt; 3 个文件，或需要并行</td><td>单文件改动可以跳过</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>context-engineering</code></td><td>agent 输出质量下降、换模块</td><td>上下文清晰时可跳过</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>incremental-implementation</code></td><td>任何多文件改动</td><td>核心步骤，不建议跳</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>source-driven-development</code></td><td>用框架 API、不确定最佳实践</td><td>熟悉的 API 可跳过</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>doubt-driven-development</code></td><td>高风险决策、安全相关</td><td>低风险可跳过</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>tdd</code></td><td>写功能代码时同步写测试</td><td>核心步骤，不建议跳</td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>合并前必做五维审查</td><td>核心步骤</td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-simplify</code></td><td>代码太复杂需要简化</td><td>代码已简洁可跳过</td></tr>
+  <tr><td><span class="phase p-ship">发布</span></td><td><code>ship</code></td><td>一键：测试 &rarr; 审查 &rarr; bump &rarr; commit &rarr; PR</td><td>不想全自动就用 commit + PR 分步走</td></tr>
+  <tr><td><span class="phase p-ship">发布</span></td><td><code>canary</code></td><td>部署后监控</td><td>非生产环境可跳过</td></tr>
+</table>
+
+<h3>快速版（小功能）</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-eng">incremental-implementation</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">tdd</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">commit</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO B: BUG FIX ========== -->
+<h2 id="eng-bug">场景 B：修 Bug / 定位问题</h2>
+<p class="trigger">触发词：「这里有个 bug」「XX 不工作了」「报错了」「性能下降了」</p>
+
+<div class="flow">
+  <p class="flow-label">流程</p>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-define">定位</span>diagnose</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-define">定位</span>investigate</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-build">修复</span>tdd（写回归测试）</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-review">审查</span>code-review-and-quality</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>commit &rarr; pull-requests</span>
+  </div>
+</div>
+
+<table>
+  <tr><th>步骤</th><th>用什么</th><th>触发词</th></tr>
+  <tr><td><span class="phase p-define">定位</span></td><td><code>diagnose</code></td><td>硬 bug、不确定根因 — 先建反馈循环，再假设、验证、修复</td></tr>
+  <tr><td><span class="phase p-define">定位</span></td><td><code>investigate</code></td><td>系统性调查，比 diagnose 轻量</td></tr>
+  <tr><td><span class="phase p-define">定位</span></td><td><code>zoom-out</code></td><td>看不懂这段代码 — 先看模块全景</td></tr>
+  <tr><td><span class="phase p-build">修复</span></td><td><code>tdd</code></td><td>先写一个会失败的回归测试，再修</td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>修完后审查修复本身 + 回归测试</td></tr>
+</table>
+
+<div class="tip"><strong>关键：</strong><code>diagnose</code> 的核心是 Phase 1 — 建反馈循环。如果你能写一个失败测试来复现 bug，这个 bug 就 90% 修完了。</div>
+
+<!-- ========== SCENARIO C: REFACTOR ========== -->
+<h2 id="eng-refactor">场景 C：重构 / 改善代码质量</h2>
+<p class="trigger">触发词：「这段代码太乱了」「重构一下」「改善架构」「代码太复杂」</p>
+
+<div class="flow">
+  <p class="flow-label">流程</p>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-define">评估</span>zoom-out</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-define">评估</span>improve-codebase-architecture</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-plan">规划</span>planning-and-task-breakdown</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-build">执行</span>incremental-implementation</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-eng"><span class="phase p-review">简化</span>code-simplify</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-review">审查</span>code-review-and-quality</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>commit</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO D: MARKETING ========== -->
+<h2 id="marketing">场景 D：做增长（SEO / 内容 / 发布）</h2>
+<p class="trigger">触发词：「要搞 SEO」「写内容」「做营销」「产品要发布了」</p>
+
+<h3>D1：SEO 全流程</h3>
+<div class="flow">
+  <p class="flow-label">SEO 流程</p>
+  <div class="flow-row">
+    <span class="step s-mkt"><span class="phase p-define">审计</span>seo-audit</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-define">研究</span>keyword-research</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-plan">策略</span>content-strategy</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-plan">架构</span>site-architecture</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-mkt"><span class="phase p-build">执行</span>seo-content-writer</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-build">执行</span>programmatic-seo</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-review">优化</span>ai-seo / geo-content-optimizer</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt"><span class="phase p-growth">监控</span>rank-tracker / analytics</span>
+  </div>
+</div>
+
+<h3>D2：营销文案</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-mkt">customer-research</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">marketing-psychology</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">copywriting</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">copy-editing</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">ad-creative</span>
+  </div>
+</div>
+
+<h3>D3：产品发布</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-mkt">launch</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">product-marketing</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">emails / social</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">analytics</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO E: DESIGN ========== -->
+<h2 id="design">场景 E：做设计（UI / 改版 / 图片）</h2>
+<p class="trigger">触发词：「做个页面」「UI 太丑了」「要改版」「生成设计图」</p>
+
+<div class="flow">
+  <p class="flow-label">设计流程</p>
+  <div class="flow-row">
+    <span class="step s-dsn"><span class="phase p-define">需求</span>prototype-prompt-generator</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn"><span class="phase p-build">设计</span>frontend-design / taste-design</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn"><span class="phase p-build">图片</span>imagegen-frontend-web / imagegen-frontend-mobile</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-dsn"><span class="phase p-review">审查</span>design-review / design-consultation</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn"><span class="phase p-review">修复</span>redesign-skill</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn"><span class="phase p-ship">导出</span>design-md / extract-static-html</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO F: PRODUCT ========== -->
+<h2 id="product">场景 F：做产品（需求 / 规划 / 评审）</h2>
+<p class="trigger">触发词：「要写 PRD」「排优先级」「产品规划」「做评审」</p>
+
+<div class="flow">
+  <p class="flow-label">产品流程</p>
+  <div class="flow-row">
+    <span class="step s-pm"><span class="phase p-define">发现</span>grill-me</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm"><span class="phase p-define">梳理</span>idea-refine</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm"><span class="phase p-plan">PRD</span>to-prd / product-requirements</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm"><span class="phase p-plan">规划</span>pm-urgency</span>
+  </div>
+  <div class="flow-row">
+    <span class="step s-pm"><span class="phase p-review">评审</span>autoplan（CEO + 设计 + 工程 + DX）</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm"><span class="phase p-ship">拆解</span>to-issues</span>
+  </div>
+</div>
+
+<!-- ========== SCENARIO G: SESSION ========== -->
+<h2 id="session">场景 G：管理 Session（保存 / 交接 / 回顾）</h2>
+<p class="trigger">触发词：「要下班了」「交接一下」「这周做了啥」「上次做到哪了」</p>
+
+<div class="flow">
+  <p class="flow-label">Session 生命周期</p>
+  <div class="flow-row">
+    <span class="step s-prd"><span class="phase p-build">开始</span>context-restore</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-prd"><span class="phase p-build">开始</span>context-engineering</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-opt">...工作中...</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-prd"><span class="phase p-ship">结束</span>context-save</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-prd"><span class="phase p-ship">结束</span>handoff</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-prd"><span class="phase p-growth">复盘</span>retro / weekly-review</span>
+  </div>
+</div>
+
+<table>
+  <tr><th>步骤</th><th>用什么</th><th>触发词</th></tr>
+  <tr><td><span class="phase p-build">恢复</span></td><td><code>context-restore</code></td><td>「resume where I left off」「restore context」「where was I」</td></tr>
+  <tr><td><span class="phase p-build">设置</span></td><td><code>context-engineering</code></td><td>新 session 或换模块 — 优化 agent 看到的信息</td></tr>
+  <tr><td><span class="phase p-ship">保存</span></td><td><code>context-save</code></td><td>「save progress」「save state」「save my work」</td></tr>
+  <tr><td><span class="phase p-ship">交接</span></td><td><code>handoff</code></td><td>交接给新 agent — 生成带建议 skill 的交接文档</td></tr>
+  <tr><td><span class="phase p-growth">复盘</span></td><td><code>retro</code></td><td>「weekly retro」「what did we ship」</td></tr>
+  <tr><td><span class="phase p-growth">复盘</span></td><td><code>weekly-review</code></td><td>按 commit 生成周报</td></tr>
+  <tr><td><span class="phase p-growth">自省</span></td><td><code>workflow-from-chats</code></td><td>从最近聊天记录里提取你的工作偏好，转化成规则</td></tr>
+  <tr><td><span class="phase p-growth">自省</span></td><td><code>show-me-your-work</code></td><td>长时间无人值守工作 — 记录每步决策供事后审查</td></tr>
+</table>
+
+<!-- ========== SCENARIO H: TOOLCHAINS ========== -->
+<h2 id="toolchains">场景 H：使用特定语言/框架</h2>
+<p class="trigger">触发词：直接用对应语言写代码时，这些 skill 会自动提供语言最佳实践</p>
+<p>这是项目最大的分类（123 skills），覆盖 15 个语言/框架。你不需要手动调用它们 — 它们在你写对应语言代码时提供上下文。</p>
+
+<div class="card-grid">
+  <div class="card"><h4>javascript/ (19)</h4><p>ES6+、模块系统、异步模式、Node.js</p></div>
+  <div class="card"><h4>platforms/ (26)</h4><p>AWS、GCP、Vercel、Netlify、Docker、Railway 等部署平台</p></div>
+  <div class="card"><h4>typescript/ (14)</h4><p>类型系统、泛型、高级类型、TS 配置</p></div>
+  <div class="card"><h4>python/ (10)</h4><p>Python 最佳实践、数据处理、脚本</p></div>
+  <div class="card"><h4>universal/ (9)</h4><p>跨语言通用模式 — 文件处理、错误处理等</p></div>
+  <div class="card"><h4>ai/ (9)</h4><p>AI/ML 相关 — 模型调用、prompt 工程</p></div>
+  <div class="card"><h4>golang/ (7)</h4><p>Go 并发模式、标准库、项目结构</p></div>
+  <div class="card"><h4>php/ (6)</h4><p>PHP 现代开发、Laravel 等</p></div>
+  <div class="card"><h4>rust/ (6)</h4><p>所有权系统、生命周期、async</p></div>
+  <div class="card"><h4>elixir/ (4)</h4><p>Phoenix 框架、OTP、并发</p></div>
+  <div class="card"><h4>ui/ (4)</h4><p>CSS、Tailwind、组件库、响应式</p></div>
+  <div class="card"><h4>visualbasic/ (4)</h4><p>VB.NET、VBA、经典 VB</p></div>
+  <div class="card"><h4>nextjs/ (3)</h4><p>App Router、SSR、ISR、API Routes</p></div>
+  <div class="card"><h4>databases/ (1)</h4><p>数据库设计和查询优化</p></div>
+  <div class="card"><h4>java/ (1)</h4><p>Java 开发模式</p></div>
+</div>
+
+<div class="tip"><strong>使用方式：</strong>当你写 Python 代码时，<code>python</code> skill 会自动提供 Python 最佳实践。结合场景 A 的流程使用 — 比如做新功能时，先走 <code>spec-driven-development</code>，然后在 implementation 阶段 toolchain skill 会自动生效。</div>
+
+<!-- ========== SCENARIO I: DOCUMENTS ========== -->
+<h2 id="documents">场景 I：文档生成</h2>
+<p class="trigger">触发词：「转 PDF」「生成文档」「做个 PPT」「写个报告」</p>
+
+<table>
+  <tr><th>Skill</th><th>用途</th><th>触发词</th></tr>
+  <tr><td><code>any2pdf</code></td><td>Markdown 转专业排版 PDF，支持中英文混排、代码块、表格、LaTeX 公式</td><td>「md 转 pdf」「生成报告」「typeset」</td></tr>
+  <tr><td><code>make-pdf</code></td><td>Markdown 转出版级 PDF（gstack 版本）</td><td>「make pdf」</td></tr>
+  <tr><td><code>frontend-slides</code></td><td>零依赖 HTML 演示文稿，支持动画，可从 PPT 转换</td><td>「做个 PPT」「create slides」「presentation」</td></tr>
+  <tr><td><code>document-generate</code></td><td>从代码生成缺失的文档</td><td>「generate docs」</td></tr>
+  <tr><td><code>document-release</code></td><td>发布后的文档更新</td><td>「update docs」</td></tr>
+</table>
+
+<!-- ========== SCENARIO J: CROSS ========== -->
+<h2 id="cross">场景 J：跨领域组合流程</h2>
+<p>现实中很多任务不是单一领域。以下是常见的跨领域组合：</p>
+
+<h3>J1：新功能 + 设计 + 部署</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-dsn">frontend-design</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">spec-driven-development</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">planning-and-task-breakdown</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">tdd</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn">design-review</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">ship</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">deploy-to-vercel</span>
+  </div>
+</div>
+
+<h3>J2：功能上线 + 营销推广</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-eng">ship</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">launch</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">product-marketing</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">seo-content-writer</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">social / emails</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">analytics</span>
+  </div>
+</div>
+
+<h3>J3：产品探索 &rarr; 设计 &rarr; 开发 &rarr; 发布（全链路）</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-pm">grill-me</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">idea-refine</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">to-prd</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-pm">to-issues</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn">frontend-design</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">tdd</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">ship</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">launch</span>
+  </div>
+</div>
+
+<h3>J4：SEO + 设计 + 开发</h3>
+<div class="flow">
+  <div class="flow-row">
+    <span class="step s-mkt">seo-audit + keyword-research</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">content-strategy + site-architecture</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-dsn">frontend-design</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-eng">tdd + incremental-implementation</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step s-mkt">seo-content-writer + ai-seo</span>
+  </div>
+</div>
+
+<!-- ========== DEVTOOLS ADVANCED ========== -->
+<h2 id="devtools-advanced">进阶：DevTools 高价值 skill</h2>
+<p><code>devtools/</code> 里除了 pstack 原则，还有几个值得关注的高价值 skill：</p>
+
+<table>
+  <tr><th>Skill</th><th>用途</th><th>触发词</th></tr>
+  <tr><td><code>orchestrate</code></td><td>将大任务分解为并行子任务，通过 Cursor SDK 分发给多个云 agent 执行</td><td><code>/orchestrate &lt;goal&gt;</code></td></tr>
+  <tr><td><code>ralph-loop</code></td><td>迭代自主开发循环 — 同一个 prompt 反复执行直到完成</td><td>「run a ralph loop」「start iterative loop」</td></tr>
+  <tr><td><code>workflow-from-chats</code></td><td>从最近 7 天的 Cursor 聊天记录里提取你的工作偏好，转化为规则/skill</td><td>「learn preferences」「mine feedback」</td></tr>
+  <tr><td><code>show-me-your-work</code></td><td>长时间无人值守工作时，记录每步决策的 TSV 日志供事后审查</td><td><code>/show-me-your-work</code></td></tr>
+  <tr><td><code>figure-it-out</code></td><td>大型迁移或多步变更的可审计 playbook — 没有更具体的 skill 时用这个</td><td>「figure it out」</td></tr>
+  <tr><td><code>deslop</code></td><td>清理 AI 生成的代码 slop</td><td>「deslop」「remove ai slop」</td></tr>
+  <tr><td><code>thermo-nuclear-review</code></td><td>极其严格的代码审查</td><td>「thermo nuclear review」</td></tr>
+</table>
+
+<h3>Universal 跨栈 skill（41 个）</h3>
+<p>这些 skill 不限语言，覆盖通用工程场景：</p>
+
+<div class="card-grid">
+  <div class="card"><h4>debugging/ (3)</h4><p>root-cause-tracing、systematic-debugging、verification-before-completion</p></div>
+  <div class="card"><h4>testing/ (5)</h4><p>TDD、test-quality-inspector、testing-anti-patterns、webapp-testing、condition-based-waiting</p></div>
+  <div class="card"><h4>security/ (2)</h4><p>security-scanning、threat-modeling</p></div>
+  <div class="card"><h4>collaboration/ (9)</h4><p>brainstorming、dispatching-parallel-agents、git-workflow、stacked-prs、writing-plans 等</p></div>
+  <div class="card"><h4>web/ (3)</h4><p>api-design-patterns、api-documentation、web-performance-optimization</p></div>
+  <div class="card"><h4>infrastructure/ (3)</h4><p>env-manager、kubernetes、terraform</p></div>
+  <div class="card"><h4>data/ (5)</h4><p>database-migration、json-data-handling、reporting-pipelines、xlsx 等</p></div>
+  <div class="card"><h4>verification/ (3)</h4><p>bug-fix、pre-merge、screenshot 验证</p></div>
+  <div class="card"><h4>其他</h4><p>architecture、main（skill-creator 等）、observability、orchestration、process</p></div>
+</div>
+
+<!-- ========== CATEGORIES ========== -->
+<h2 id="categories">全部分类速查</h2>
+<p>项目里有 400+ skills，按 17 个目录组织。下表按 skill 数量排序。</p>
+
+<table>
+  <tr><th>分类</th><th>数量</th><th>用途</th></tr>
+  <tr><td><code>toolchains/</code></td><td>123</td><td>语言/框架专精 — JS/TS、Python、Rust、Go、Elixir、PHP、Java、UI、数据库、AI、部署平台</td></tr>
+  <tr><td><code>engineering/</code></td><td>74</td><td>编码、测试、审查、部署、React/Next.js、CI/CD。核心工程工作流</td></tr>
+  <tr><td><code>marketing/</code></td><td>65</td><td>SEO、GEO、广告、文案、分析、增长、销售赋能。营销全流程</td></tr>
+  <tr><td><code>devtools/</code></td><td>65</td><td>Cursor 插件、IDE 工作流、pstack 原则（19 条）、团队协作工具</td></tr>
+  <tr><td><code>gstack/</code></td><td>59</td><td>iOS 开发、设计工作流、部署、QA、浏览器自动化、brainstorming</td></tr>
+  <tr><td><code>universal/</code></td><td>41</td><td>跨栈技能 — 调试、安全、测试、验证、基础设施、编排</td></tr>
+  <tr><td><code>design/</code></td><td>30</td><td>UI/UX、设计系统、视觉品味、图片生成、动画</td></tr>
+  <tr><td><code>productivity/</code></td><td>10</td><td>Prompt 增强、写作、brainstorming、agent skill 管理、handoff</td></tr>
+  <tr><td><code>misc/</code></td><td>11</td><td>实验性或窄范围 skill</td></tr>
+  <tr><td><code>product-management/</code></td><td>7</td><td>PM 基础、增长、创业、工程领导力</td></tr>
+  <tr><td><code>documents/</code></td><td>5</td><td>文档生成 — PDF、HTML slides</td></tr>
+  <tr><td><code>mobile/</code></td><td>5</td><td>iOS 开发、设计审查、QA</td></tr>
+  <tr><td><code>learning-and-growth/</code></td><td>4</td><td>自我提升、写作计划、interview、writing-skills</td></tr>
+  <tr><td><code>personal/</code></td><td>2</td><td>个人定制 — 文章编辑、Obsidian 笔记管理</td></tr>
+  <tr><td><code>research/</code></td><td>1</td><td>研究和新闻监控（last30days）</td></tr>
+  <tr><td><code>agent-browser/</code></td><td>1</td><td>浏览器自动化 CLI</td></tr>
+  <tr><td><code>in-progress/</code></td><td>5</td><td>开发中的 skill</td></tr>
+</table>
+
+<!-- ========== PRINCIPLES ========== -->
+<h2 id="principles">pstack 原则（19 条工程信条）</h2>
+<p>来自 <a href="https://github.com/cursor/plugins">cursor/plugins</a> 仓库的 pstack 原则。这些不是流程 skill，而是你做工程决策时的指导原则。遇到「该不该这样做」的纠结时，回来翻翻。</p>
+
+<table>
+  <tr><th>原则</th><th>核心含义</th><th>什么时候用</th></tr>
+  <tr><td><code>principle-experience-first</code></td><td>先定义用户体验，再写代码</td><td>开始任何新功能前</td></tr>
+  <tr><td><code>principle-subtract-before-you-add</code></td><td>先删后加 — 代码越多越难维护</td><td>准备加新代码时</td></tr>
+  <tr><td><code>principle-fix-root-causes</code></td><td>修根因，不修症状</td><td>修 bug 时</td></tr>
+  <tr><td><code>principle-prove-it-works</code></td><td>不要说「应该能跑」— 要有证据（测试、截图、日志）</td><td>声称「完成了」之前</td></tr>
+  <tr><td><code>principle-foundational-thinking</code></td><td>先把地基打好 — 依赖、类型、接口先稳定</td><td>规划实现顺序时</td></tr>
+  <tr><td><code>principle-exhaust-the-design-space</code></td><td>先把设计空间探完再选方案 — 不要想到第一个方案就开干</td><td>架构决策时</td></tr>
+  <tr><td><code>principle-encode-lessons-in-structure</code></td><td>把教训编码进代码结构（类型、测试、接口约束），而不是文档里</td><td>踩坑之后</td></tr>
+  <tr><td><code>principle-guard-the-context-window</code></td><td>保护 agent 的上下文窗口 — 控制文件大小、减少噪音</td><td>agent 输出质量下降时</td></tr>
+  <tr><td><code>principle-minimize-reader-load</code></td><td>减少阅读者的认知负荷 — 命名清晰、结构简单</td><td>写代码和文档时</td></tr>
+  <tr><td><code>principle-make-operations-idempotent</code></td><td>操作要幂等 — 重复执行不会出错</td><td>写脚本、API、部署流程时</td></tr>
+  <tr><td><code>principle-never-block-on-the-human</code></td><td>不要等人 — 能推就推，需要人决策时明确标注</td><td>agent 遇到不确定时</td></tr>
+  <tr><td><code>principle-boundary-discipline</code></td><td>严格的边界纪律 — 每个模块只管自己的事</td><td>设计模块接口时</td></tr>
+  <tr><td><code>principle-laziness-protocol</code></td><td>能懒就懒 — 不做不必要的事</td><td>准备「顺手」做点什么之前</td></tr>
+  <tr><td><code>principle-outcome-oriented-execution</code></td><td>以结果为导向 — 不要为了写代码而写代码</td><td>评估任务价值时</td></tr>
+  <tr><td><code>principle-redesign-from-first-principles</code></td><td>从第一性原理重新设计 — 不要被现有实现锚定</td><td>重构陷入困境时</td></tr>
+  <tr><td><code>principle-build-the-lever</code></td><td>造杠杆工具 — 一次投入，多次受益</td><td>发现自己在重复做同一件事时</td></tr>
+  <tr><td><code>principle-separate-before-serializing-shared-state</code></td><td>共享状态先分离再序列化</td><td>处理共享状态持久化时</td></tr>
+  <tr><td><code>principle-type-system-discipline</code></td><td>类型系统纪律 — 用类型约束代替运行时检查</td><td>设计数据结构时</td></tr>
+  <tr><td><code>principle-migrate-callers-then-delete-legacy-apis</code></td><td>先迁移调用方，再删旧 API — 不要一步到位</td><td>废弃旧接口时</td></tr>
+</table>
+
+<!-- ========== SOURCES ========== -->
+<h2 id="sources">来源说明</h2>
+<p>这些 skills 来自多个开源项目，由 <code>skills-lock.json</code> 记录每个 skill 的来源和哈希。</p>
+
+<table>
+  <tr><th>来源</th><th>贡献领域</th></tr>
+  <tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td>工程核心流程（TDD、diagnose、planning、spec-driven-development 等）</td></tr>
+  <tr><td><a href="https://github.com/garrytan/gstack">garrytan/gstack</a></td><td>iOS、部署、QA、brainstorming、weekly-review、ship、canary 等</td></tr>
+  <tr><td><a href="https://github.com/vercel-labs/agent-skills">vercel-labs/agent-skills</a></td><td>CI/CD、前端工程、deploy-to-vercel</td></tr>
+  <tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td>SEO、增长、文案、广告、分析（65 个 marketing skills）</td></tr>
+  <tr><td><a href="https://github.com/aaron-he-zhu/seo-geo-claude-skills">aaron-he-zhu/seo-geo-claude-skills</a></td><td>SEO/GEO 专精（关键词、Schema、AI SEO、监控）</td></tr>
+  <tr><td><a href="https://github.com/cursor/plugins">cursor/plugins</a></td><td>Cursor IDE 集成、pstack 原则（19 条）、orchestrate、ralph-loop</td></tr>
+  <tr><td><a href="https://github.com/wshobson/agents">wshobson/agents</a></td><td>UI 设计、可访问性</td></tr>
+  <tr><td><a href="https://github.com/bobmatnyc/claude-mpm-skills">bobmatnyc/claude-mpm-skills</a></td><td>多 agent 编排、协作模式</td></tr>
+  <tr><td><a href="https://github.com/sickn33/antigravity-awesome-skills">sickn33/antigravity-awesome-skills</a></td><td>AI agent 架构设计</td></tr>
+  <tr><td><a href="https://github.com/lovstudio/any2pdf">lovstudio/any2pdf</a></td><td>Markdown 转 PDF</td></tr>
+  <tr><td><a href="https://github.com/zarazhangrui/frontend-slides">zarazhangrui/frontend-slides</a></td><td>HTML 演示文稿</td></tr>
+  <tr><td>szj2ys/skills（原创）</td><td>手写 skill、整合、lock 文件管理</td></tr>
+</table>
+
+<p style="margin-top: 3rem; color: var(--muted); font-size: 0.85rem;">最后更新：2026-06-04</p>
+
+</body>
+</html>
