@@ -337,16 +337,31 @@ async function fetchAndEncode(url: string, timeout: number, redirectCount = 0): 
 
   return new Promise((resolve) => {
     const client = parsedUrl.protocol === 'https:' ? https : http;
-    const req = client.get(
-      url,
-      {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SnapshotBot/2.0)' },
-        timeout,
-        lookup: (hostname: string, options: any, callback: any) => {
-           // Prevent DNS rebinding by using the already validated IP
-           callback(null, safeCheck.ip!, safeCheck.family || 4);
-        }
+    const originalHostname = parsedUrl.hostname;
+    
+    // Rewrite URL to use the validated IP address
+    if (safeCheck.ip!.includes(':')) {
+      parsedUrl.hostname = `[${safeCheck.ip!}]`;
+    } else {
+      parsedUrl.hostname = safeCheck.ip!;
+    }
+    
+    const options: any = {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (compatible; SnapshotBot/2.0)',
+        'Host': originalHostname
       },
+      timeout,
+    };
+    
+    // Required for HTTPS SNI and certificate validation when connecting by IP
+    if (parsedUrl.protocol === 'https:') {
+      options.servername = originalHostname;
+    }
+
+    const req = client.get(
+      parsedUrl.href,
+      options,
       (resp) => {
         if (
           resp.statusCode! >= 300 &&

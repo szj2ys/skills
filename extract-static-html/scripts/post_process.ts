@@ -242,7 +242,10 @@ function resolveLocalFile(localPath: string, baseDir: string): string | null {
     return null;
   }
 
-  if (!realTargetPath.startsWith(normalizedBase)) {
+  // Ensure strict directory boundary by appending path separator
+  const safeBaseDir = normalizedBase.endsWith(path.sep) ? normalizedBase : normalizedBase + path.sep;
+
+  if (realTargetPath !== normalizedBase && !realTargetPath.startsWith(safeBaseDir)) {
     return null; // Path traversal attempted via symlinks or ../
   }
 
