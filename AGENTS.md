@@ -16,3 +16,5 @@ Unless the user explicitly specifies a different directory or project, any reque
 
 If the user's request is ambiguous about location, **ask before assuming** a different project.
 
+
+with the skills, the most important thing is to deceide what to do rather than how to do it. This is the reason of this project.
