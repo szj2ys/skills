@@ -45,6 +45,7 @@ Google's core objective is to discover, understand, and serve the most relevant,
 **Checklist:**
 - [ ] Verify only preferred (canonical) URLs are included in the XML Sitemap.
 - [ ] Remove staging `noindex` tags or HTTP header blocks.
+- [ ] Ping Google using the Indexing API (Note: ONLY use the Indexing API for JobPosting or BroadcastEvent structured data. Using it for general content is considered spam and can result in revoked access). For general content, rely on XML sitemaps.
 - [ ] Run key templates through the Rich Results Test (do not launch without this).
 - [ ] Establish performance baselines using Lighthouse CI or similar tools.
 
@@ -59,7 +60,7 @@ Google's core objective is to discover, understand, and serve the most relevant,
 **Checklist:**
 - [ ] Ensure newly generated dynamic parameters (like `?sort=`) have canonical tags pointing to the static base URL.
 - [ ] Periodically audit the sitemap to replace redirects (301/302) with final destination URLs.
-- [ ] Ensure structured data updates simultaneously when visible page content updates (e.g., stock status, price).
+- [ ] Ensure structured data updates simultaneously when visible page content updates (e.g., stock status, price). Validate structured data against both Schema.org vocabulary and Google's specific feature guides for rich result eligibility.
 
 ### 4. Diagnose Stage
 *Objective: Identify and resolve indexing conflicts and ranking drops.*
@@ -84,6 +85,8 @@ Google's core objective is to discover, understand, and serve the most relevant,
 ### Scenario 1: Handling Duplicate Content
 1. **Are the pages actually identical or nearly identical?**
    - *Yes, but both must exist for users (e.g., tracking URLs, color variants):* Use `rel="canonical"` on the duplicates pointing to the preferred version.
+   - *Yes, due to pagination:* Use self-referencing canonicals on each page. Do *not* canonicalize page 2 to page 1. Ensure paginated pages are linked sequentially (e.g., `<a href="?page=2">Next</a>`) to allow crawler discovery.
+   - *Yes, due to internationalization:* If duplicate content is due to language or regional targeting, implement `hreflang` tags alongside canonical tags.
    - *Yes, and only one needs to exist (e.g., old URL structure):* Use a 301 Permanent Redirect to the new version.
    - *No, they serve different intents:* Differentiate the content significantly; they are not duplicates.
 
@@ -96,9 +99,21 @@ Google's core objective is to discover, understand, and serve the most relevant,
 
 ### Scenario 3: Soft 404 Diagnosis
 1. **Does the content still exist?**
-   - *No:* Return a hard 404 or 410 HTTP status code.
+   - *No:* Return a hard 404 or a 410 HTTP status code. If the content is definitely gone and not returning, 410 (Gone) is a stronger signal to Google to remove the URL from the index faster than a 404.
    - *Yes, it moved:* Implement a 301 Redirect to the new location.
    - *Yes, it's right here:* Googlebot likely failed to render critical JS/CSS. Check if resources are blocked in `robots.txt` or timing out, resulting in a blank render.
+
+### Scenario 4: Mobile Parity
+1. **Auditing a separate mobile site (m.example.com) or responsive design:**
+   - *Rule:* Google uses mobile-first indexing.
+   - *Decision:* Does the mobile version have the exact same primary content, internal links, images (including alt text), structured data, and meta directives as the desktop version?
+   - *No:* Action Required. You must ensure absolute parity. If content or links are hidden on mobile, Google assumes they don't exist.
+
+### Scenario 5: Client-Side Rendered (CSR) Content
+1. **Context:** A page relies heavily on JavaScript (e.g., React, Vue) to load primary content.
+   - *Rule:* Googlebot runs a headless browser and *can* execute JavaScript, but it happens in a secondary, delayed rendering queue.
+   - *Question:* Is the primary content visible in the initial HTML response (View Source), or only after the DOM loads?
+   - *Only after DOM loads:* Action Required. Flag this as an indexation risk. Ensure critical content, links, and meta tags are present in the initial HTML payload (via Server-Side Rendering, Static Site Generation, or Dynamic Rendering). Do not rely on Googlebot to execute JS for primary discovery.
 
 ---
 
