@@ -20,7 +20,7 @@ Google's core objective is to discover, understand, and serve the most relevant,
 
 **Decision Frameworks:**
 *   **Sitemap Strategy:** 
-    *   *Need a sitemap:* Large sites (>500 pages), new sites with few backlinks, sites with rich media/news.
+    *   *Need a sitemap:* Large sites (>500 pages), new sites with few backlinks, sites with rich media/news. A single sitemap can contain a maximum of 50,000 URLs and must be uncompressed 50MB or smaller. Ensure ONLY canonical, indexable (200 OK) URLs are included. Do not include URLs that redirect (3xx), return 4xx/5xx errors, or have a `noindex` tag.
     *   *Don't need a sitemap:* Small sites (<500 pages) with comprehensive internal linking from the homepage.
 *   **Crawl vs. Index Control:**
     *   *Goal: Keep out of index (e.g., staging, internal search).* -> Use `noindex` meta tag. **Do not** block in `robots.txt` (Google must crawl to see the tag).
