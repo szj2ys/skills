@@ -1,115 +1,113 @@
-# Google SEO Guidelines
+# Google SEO Guidelines: Crawling, Indexing & Structured Data
 
-## 1. High-Level Philosophy
+## High-Level Philosophy
+**Optimize in the lab, validate in the field. Guide the crawler, don't trap it.**
 
-The goal of this skill is to operationalize Google Search Central documentation into actionable decision-making heuristics for agents. This is the definitive "what Google officially wants" guide.
+Google's core objective is to discover, understand, and serve the most relevant, high-quality content to users. As an agent, your goal is to architect and maintain a site that makes this process frictionless.
 
-**Core Principles:**
-*   **Crawl Budget is Finite:** Prioritize what Googlebot sees. Don't waste crawl budget on low-value, duplicate, or infinite-space URLs (like complex faceted navigation).
-*   **Indexation Requires Clarity:** Google needs unambiguous signals. Conflicting signals (e.g., a page is in the sitemap, has a self-referencing canonical, but is blocked by robots.txt) lead to unpredictable indexation.
-*   **User Experience (Page Experience) is a Tie-Breaker:** Core Web Vitals (CWV) are a ranking factor. When content quality is equal, the faster, more stable page wins.
-*   **Structured Data Needs Purpose:** Only implement schema if it makes the content eligible for a specific Google Search rich result.
-
----
-
-## 2. Site Lifecycle Stages
-
-### Phase 1: Build (Pre-Launch & Architecture)
-
-**Prioritized Checklist:**
-1.  **Determine Crawl Control:** 
-    *   *Decision:* Do we need to block areas of the site from being crawled (e.g., admin panels, internal search results)?
-    *   *Action:* Draft the `robots.txt` file.
-2.  **Define Canonical Strategy:**
-    *   *Decision:* Are there parameters that change the URL but not the core content (e.g., tracking tags, simple sorting)?
-    *   *Action:* Implement self-referencing canonical tags on all core pages to establish the "master" version.
-3.  **Plan the Sitemap:**
-    *   *Decision:* Is the site large (>50,000 URLs)?
-    *   *Action:* Plan a sitemap index file pointing to multiple child sitemaps. Ensure ONLY canonical, indexable (200 OK) URLs are included.
-4.  **Establish CWV Baselines:**
-    *   *Decision:* Are we using heavy JavaScript frameworks or large media?
-    *   *Action:* Test templates using Lighthouse/PageSpeed Insights to ensure LCP (Largest Contentful Paint), CLS (Cumulative Layout Shift), and INP (Interaction to Next Paint) are within "Good" thresholds.
-
-### Phase 2: Launch
-
-**Prioritized Checklist:**
-1.  **Remove Blockers:**
-    *   *Action:* Ensure any global `noindex` tags or broad `Disallow: /` directives used during staging are removed.
-2.  **Submit Sitemaps:**
-    *   *Action:* Submit the sitemap index via Google Search Console (GSC).
-3.  **Ping Google (Optional but Recommended):**
-    *   *Action:* Use the Indexing API (if applicable for job postings/broadcast events) or manually inspect critical URLs in GSC to request indexing.
-
-### Phase 3: Maintain (Ongoing Health)
-
-**Prioritized Checklist:**
-1.  **Monitor GSC Coverage:**
-    *   *Decision:* Are there spikes in "Crawled - currently not indexed" or "Discovered - currently not indexed"?
-    *   *Action:* If yes, evaluate content quality and internal linking.
-2.  **Maintain CWV:**
-    *   *Decision:* Check the CrUX (Chrome User Experience Report) data in GSC. Are URLs falling into "Needs Improvement" or "Poor"?
-    *   *Action:* Prioritize fixing INP and CLS issues, as these often correlate strongly with poor user engagement.
-3.  **Validate Structured Data:**
-    *   *Action:* Monitor the Enhancements reports in GSC. Fix "Errors" immediately. "Warnings" can be deprioritized unless they block a desired rich result.
-
-### Phase 4: Diagnose (Troubleshooting)
-
-**Prioritized Checklist:**
-1.  **The URL is not indexed:**
-    *   *Action:* Run the URL Inspection tool in GSC. Check the specific error (e.g., blocked by robots.txt, noindex detected, duplicate without user-selected canonical).
-2.  **Traffic dropped suddenly:**
-    *   *Action:* Check GSC "Manual Actions" and "Security Issues". If clear, check if a specific section/template dropped, or if the whole site dropped (often algorithmic or a major technical failure).
-3.  **Rich results disappeared:**
-    *   *Action:* Test the URL with the Rich Results Test tool. Check if the schema broke due to a recent template change.
+**Core Directives:**
+*   **What to do rather than how to do it:** Focus on architectural decisions and signal management.
+*   **Never send mixed signals:** Your sitemap, canonical tags, internal links, and redirects must all point to the *same* URL.
+*   **Visibility is mandatory:** Never mark up content with structured data that is hidden from the user.
+*   **Crawl budget is finite:** Guide the bot away from infinite spaces (calendars, filters) and towards high-value content.
 
 ---
 
-## 3. Decision Trees for Common Scenarios
+## Site Lifecycle Stages
 
-### Scenario A: Duplicate Content Handling
+### 1. Build Stage
+*Objective: Architect the site to minimize inherent duplicate URLs and structural issues from day one.*
 
-**Context:** You have multiple URLs showing the same or highly similar content.
+**Decision Frameworks:**
+*   **Sitemap Strategy:** 
+    *   *Need a sitemap:* Large sites (>500 pages), new sites with few backlinks, sites with rich media/news.
+    *   *Don't need a sitemap:* Small sites (<500 pages) with comprehensive internal linking from the homepage.
+*   **Crawl vs. Index Control:**
+    *   *Goal: Keep out of index (e.g., staging, internal search).* -> Use `noindex` meta tag. **Do not** block in `robots.txt` (Google must crawl to see the tag).
+    *   *Goal: Save crawl budget (e.g., faceted navigation).* -> Use `robots.txt` disallow.
+*   **Structured Data Format:** Always default to **JSON-LD**. It is less prone to breaking layout than Microdata.
 
-*   **Question 1:** Is one version clearly the "main" or preferred version?
-    *   **Yes:** Add a `<link rel="canonical" href="[MAIN_URL]">` to all alternate versions pointing to the main version.
-    *   **No (e.g., paginated series):** Use self-referencing canonicals on each page. Do *not* canonicalize page 2 to page 1.
-*   **Question 2:** Do the alternate URLs serve a purpose for users but waste crawl budget (e.g., complex filter combinations)?
-    *   **Yes:** Consider adding `Disallow` in `robots.txt` for those specific parameter patterns.
-    *   **No:** Rely on the canonical tag.
+**Checklist:**
+- [ ] Establish absolute consistency for URL patterns (trailing slash vs. no trailing slash, HTTP vs. HTTPS).
+- [ ] Include a self-referencing `rel="canonical"` link tag in the base template of every indexable page.
+- [ ] Define the Largest Contentful Paint (LCP) element early; ensure it renders server-side.
+- [ ] Reserve space (aspect ratios/fixed dimensions) for all dynamic content to prevent Cumulative Layout Shift (CLS).
 
-### Scenario B: Blocking Crawling vs. Indexing
+### 2. Launch Stage
+*Objective: Signal exactly which URLs are canonical and validate lab data against reality.*
 
-**Context:** You want to hide a page from Google.
+**Decision Frameworks:**
+*   **Consolidation Method:**
+    *   *When to use 301 Redirects:* The duplicate page is deprecated or you are forcing a global rule.
+    *   *When to use `rel="canonical"`:* Multiple valid URLs serve the same content (e.g., product variants, tracking params), but only one should be indexed.
+*   **Lab Data Thresholds:** Set stricter lab thresholds than field targets (e.g., target 1.5s LCP in the lab to ensure a 2.5s LCP in the field).
 
-*   **Question 1:** Do you need to ensure the page NEVER appears in search results, even if someone links to it?
-    *   **Yes:** You must use a `noindex` meta tag or X-Robots-Tag HTTP header. **CRITICAL:** Do *not* block the URL in `robots.txt`. If Googlebot cannot crawl the page, it cannot see the `noindex` tag, and the page might still be indexed based on external links.
-    *   **No, I just don't want Googlebot wasting time crawling it:** Use `Disallow` in `robots.txt`.
+**Checklist:**
+- [ ] Verify only preferred (canonical) URLs are included in the XML Sitemap.
+- [ ] Remove staging `noindex` tags or HTTP header blocks.
+- [ ] Run key templates through the Rich Results Test (do not launch without this).
+- [ ] Establish performance baselines using Lighthouse CI or similar tools.
 
-### Scenario C: Deleting Content
+### 3. Maintain Stage
+*Objective: Prevent duplicate URLs from proliferating and monitor field data.*
 
-**Context:** A page is no longer needed.
+**Decision Frameworks:**
+*   **Sitemap Hygiene (`<lastmod>`):** Only update the `<lastmod>` date when content has changed *substantively*. Google ignores `<priority>` and `<changefreq>`.
+*   **Template vs. URL Triage:** Group failing URLs in Google Search Console (GSC) by template. A failure on 1,000 product pages is a single template issue, not 1,000 separate problems.
+*   **Internal Linking:** Internal links are a massive canonicalization signal. Consistently link to the canonical URL, never to a redirect or parameterized version.
 
-*   **Question 1:** Is the content permanently gone with no relevant replacement?
-    *   **Yes:** Serve a 404 (Not Found) or 410 (Gone) status code.
-*   **Question 2:** Has the content moved or is there a highly relevant equivalent page?
-    *   **Yes:** Implement a 301 (Permanent) redirect to the new/equivalent URL.
+**Checklist:**
+- [ ] Ensure newly generated dynamic parameters (like `?sort=`) have canonical tags pointing to the static base URL.
+- [ ] Periodically audit the sitemap to replace redirects (301/302) with final destination URLs.
+- [ ] Ensure structured data updates simultaneously when visible page content updates (e.g., stock status, price).
 
-### Scenario D: Mobile Parity
+### 4. Diagnose Stage
+*Objective: Identify and resolve indexing conflicts and ranking drops.*
 
-**Context:** Auditing a separate mobile site (m.example.com) or responsive design.
-
-*   **Rule:** Google uses mobile-first indexing.
-*   **Decision:** Does the mobile version have the exact same primary content, structured data, and meta directives as the desktop version?
-    *   **No:** *Action Required.* You must ensure parity. If content is hidden on mobile, Google assumes it doesn't exist.
+**Decision Frameworks:**
+*   **Triage via Search Console (Indexation):**
+    *   *Discovered - currently not indexed:* Usually a crawl budget or quality issue. Improve internal linking.
+    *   *Crawled - currently not indexed:* Usually a severe quality/intent issue or near-duplicate content.
+    *   *Duplicate, Google chose different canonical:* Your signals are conflicting. Align sitemaps, internal links, and canonical tags.
+*   **Rich Result Drop-Off:**
+    *   Check Manual Actions for spammy/hidden markup penalties.
+    *   Check Enhancements report for spike in errors (missing required fields).
+*   **Core Web Vitals Triage Order:**
+    *   1. CLS (easiest to fix: add aspect ratios).
+    *   2. LCP (optimize hero asset or server response).
+    *   3. INP (hardest: requires JS execution optimization).
 
 ---
 
-## 4. When to Escalate
+## Decision Trees for Common Scenarios
 
-Agents should halt autonomous action and escalate to a human SEO or developer in the following situations:
+### Scenario 1: Handling Duplicate Content
+1. **Are the pages actually identical or nearly identical?**
+   - *Yes, but both must exist for users (e.g., tracking URLs, color variants):* Use `rel="canonical"` on the duplicates pointing to the preferred version.
+   - *Yes, and only one needs to exist (e.g., old URL structure):* Use a 301 Permanent Redirect to the new version.
+   - *No, they serve different intents:* Differentiate the content significantly; they are not duplicates.
 
-1.  **Robots.txt Changes on Large Sites:** Modifying `robots.txt` on a site with millions of URLs can cause catastrophic de-indexation if a wildcard is misused. Escalate for review.
-2.  **Sitewide Migration or Domain Change:** This requires complex 301 mapping mapping and staging environment validation.
-3.  **Hacked Content / Security Warnings:** If GSC reports a security issue or if injected spam is detected, escalate immediately to security/devops.
-4.  **JavaScript Rendering Failures:** If the URL Inspection tool's "View Tested Page" shows a blank screen or missing critical content, the JS framework is likely blocking Googlebot. This requires engineering intervention (e.g., implementing Dynamic Rendering or Server-Side Rendering).
-5.  **Manual Actions:** Any manual penalty in GSC requires a human to review the violation, fix it, and write a reconsideration request.
+### Scenario 2: Blocking Content
+1. **Should the page appear in Google Search?**
+   - *Yes:* Ensure it is in the sitemap, has a self-referencing canonical, and is linked internally.
+   - *No.* -> **Why not?**
+     - *It's an infinite combination of filters/sorting wasting crawl budget:* Block crawling via `robots.txt` Disallow.
+     - *It's thin, private, or administrative content that must never be indexed:* Add a `noindex` meta tag. **Do not** block in `robots.txt`.
+
+### Scenario 3: Soft 404 Diagnosis
+1. **Does the content still exist?**
+   - *No:* Return a hard 404 or 410 HTTP status code.
+   - *Yes, it moved:* Implement a 301 Redirect to the new location.
+   - *Yes, it's right here:* Googlebot likely failed to render critical JS/CSS. Check if resources are blocked in `robots.txt` or timing out, resulting in a blank render.
+
+---
+
+## When to Escalate
+
+While most SEO issues can be resolved architecturally, some require human escalation or cross-team collaboration:
+
+*   **Conflicting Business vs. SEO Goals:** If marketing requires massive use of tracking parameters that are aggressively cannibalizing canonical signals, escalate to establish a URL parameter strategy.
+*   **Persistent "Crawled - currently not indexed" on High-Value Content:** If technical signals are perfect but Google refuses to index core pages, this indicates a sitewide quality/authority issue requiring human content strategy intervention.
+*   **Manual Actions:** Any notification of a Manual Action in GSC regarding Structured Data or spam requires immediate escalation and a formal reconsideration request.
+*   **TTFB Failures (LCP):** If LCP fails due to Server Response Time (TTFB > 600ms), escalate immediately to Backend/DevOps. Frontend optimizations cannot fix a slow server.
+*   **Traffic Drops with No Technical Errors:** If indexation is healthy, CWV is "Good," and structured data is valid, but organic traffic drops significantly, escalate to analyze algorithm updates or changing search intent.
