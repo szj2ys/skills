@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skills 使用指南 — 400+ skills，按场景组织</title>
+<title>Skills 使用指南 — 348 skills，按场景组织</title>
 <style>
   :root {
     --bg: #ffffff; --fg: #1a1a1a; --muted: #6b7280;
@@ -114,7 +114,7 @@
 <body>
 
 <h1>Skills 使用指南</h1>
-<p class="sub">400+ skills，17 个分类 — 按场景组织，知道什么时候用什么、怎么串起来。</p>
+<p class="sub">348 skills，8 个分类 — 按场景组织，知道什么时候用什么、怎么串起来。</p>
 
 <!-- TOC -->
 <nav class="toc">
@@ -122,6 +122,7 @@
   <ol>
     <li><a href="#install">安装</a></li>
     <li><a href="#how">怎么用这份指南</a></li>
+    <li><a href="#invocation">怎么调用 skill</a></li>
     <li><a href="#decision">第一步：判断你该走哪条路</a></li>
     <li><a href="#eng-new">场景 A：做新功能</a></li>
     <li><a href="#eng-bug">场景 B：修 Bug / 定位问题</a></li>
@@ -130,8 +131,7 @@
     <li><a href="#design">场景 E：做设计（UI / 改版 / 图片）</a></li>
     <li><a href="#product">场景 F：做产品（需求 / 规划 / 评审）</a></li>
     <li><a href="#session">场景 G：管理 Session（保存 / 交接 / 回顾）</a></li>
-    <li><a href="#toolchains">场景 H：使用特定语言/框架</a></li>
-    <li><a href="#documents">场景 I：文档生成</a></li>
+    <li><a href="#documents">场景 H：文档生成</a></li>
     <li><a href="#cross">场景 J：跨领域组合流程</a></li>
     <li><a href="#devtools-advanced">进阶：DevTools 高价值 skill</a></li>
     <li><a href="#categories">全部分类速查</a></li>
@@ -155,7 +155,83 @@
   <li><strong>执行顺序</strong> — 这些 skill 按什么顺序串起来？</li>
 </ol>
 <div class="note"><strong>提示：</strong>不是每个任务都需要走完所有步骤。简单 bug 只需要 <code>diagnose</code> + <code>tdd</code> + <code>commit</code>；一个全新功能才需要走完整条线。按需取用，不要教条。</div>
-<div class="tip"><strong>元 skill：</strong><code>using-agent-skills</code>（在 <code>productivity/</code> 里）是一棵完整的工程决策树，能帮你自动判断当前任务该用哪个 skill。它是这份指南的机器可读版本。</div>
+<div class="tip"><strong>元 skill：</strong><code>using-agent-skills</code>（在 <code>agent/</code> 里）是一棵完整的工程决策树，能帮你自动判断当前任务该用哪个 skill。它是这份指南的机器可读版本。</div>
+
+<!-- ========== HOW TO INVOKE ========== -->
+<h2 id="invocation">怎么调用 skill</h2>
+<p>使用 <code>$skill-name</code> 语法显式触发 skill。可以在对话中直接写，也可以在 prompt 文件顶部写。以下是三种典型的调用方式。</p>
+
+<h3>调用方式 1：单个 skill</h3>
+<p>最简单的方式 — 在对话中用 <code>$skill-name</code> 触发一个 skill：</p>
+<div class="scenario">
+<pre><code>$diagnose 我的登录页面在高并发时报 500 错误，本地无法复现
+
+$tdd 为用户权限检查函数写测试
+
+$spec-driven-development "给系统加一个多租户功能"
+
+$seo-audit https://myapp.com
+
+$grill-with-docs 我打算用事件溯源做订单系统
+
+$frontend-design 设计一个定价页面，参考 Linear 风格
+
+$code-review-and-quality
+
+$context-engineering 我要改 src/auth/ 模块
+
+$canary 监控灰度发布
+</code></pre>
+</div>
+
+<h3>调用方式 2：组合调用（多 skill 串联）</h3>
+<p>一个复杂任务往往需要多个 skill 按顺序执行。每个 skill 完成后，你可以手动触发下一个，也可以让 Agent 推荐下一步：</p>
+<div class="scenario">
+<pre><code># SEO 全流程
+$seo-audit https://myapp.com
+$keyword-research "AI project management tools"
+$site-architecture
+</code></pre>
+</div>
+
+<p>另一个例子 — 做一个新功能从头到尾：</p>
+<div class="scenario">
+<pre><code># 定义需求
+$spec-driven-development "给用户加一个角色权限系统"
+
+# 规划任务
+$planning-and-task-breakdown 实现角色权限系统
+
+# 测试驱动开发
+$tdd 为权限检查函数写测试
+
+# 审查 + 提交
+$code-review-and-quality
+$commit
+</code></pre>
+</div>
+
+<h3>调用方式 3：组合调用（同一 prompt 里同时触发多个）</h3>
+<p>当你需要 Agent 同时做多件事时，可以把多个 skill 名放在同一个 prompt 里：</p>
+<div class="scenario">
+<pre><code># 同时做 SEO 审计和关键词研究
+$seo-audit + $keyword-research "AI project management tools" https://myapp.com
+
+# 设计 + 生成图片
+$frontend-design + $image-generation "pricing page hero"
+
+# 审计 + 简化
+$code-audit + $code-simplify src/auth/
+
+# 关键词研究 + 内容策略 + AI SEO
+$keyword-research + $content-strategy + $ai-seo "project management tools"
+
+# 产品探索 + PRD
+$grill-me + $idea-refine + $to-prd
+</code></pre>
+</div>
+
+<div class="note"><strong>注意：</strong><code>$skill-name</code> 是显式触发方式。即使不写 <code>$</code>，只要你的 prompt 里包含 skill 的触发词（比如「诊断这个 bug」「写个测试」「做 SEO 审计」），Agent 也会自动匹配对应的 skill。但显式触发更可靠，尤其是在需要精确控制执行顺序时。下面各场景表格中的「调用示例」列都是可以直接复制使用的。</div>
 
 <!-- ========== DECISION TREE ========== -->
 <h2 id="decision">第一步：判断你该走哪条路</h2>
@@ -208,14 +284,9 @@
     <span class="step s-prd">场景 G</span>
   </div>
   <div class="flow-row">
-    <span class="step s-tc">用特定语言/框架写代码？</span>
-    <span class="arrow">&rarr;</span>
-    <span class="step s-tc">场景 H</span>
-  </div>
-  <div class="flow-row">
     <span class="step s-uni">要生成 PDF / 文档 / slides？</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-uni">场景 I</span>
+    <span class="step s-uni">场景 H</span>
   </div>
 </div>
 
@@ -244,7 +315,7 @@
     <span class="step s-eng"><span class="phase p-ship">发布</span>commit</span>
   </div>
   <div class="flow-row">
-    <span class="step s-eng"><span class="phase p-ship">发布</span>pull-requests / ship</span>
+    <span class="step s-eng"><span class="phase p-ship">发布</span>pull-requests</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-eng"><span class="phase p-ship">发布</span>deploy-to-vercel / land-and-deploy</span>
     <span class="arrow">&rarr;</span>
@@ -254,19 +325,18 @@
 
 <h3>各步骤说明</h3>
 <table>
-  <tr><th>步骤</th><th>用什么</th><th>触发词</th><th>可以跳过吗</th></tr>
-  <tr><td><span class="phase p-define">定义</span></td><td><code>spec-driven-development</code></td><td>需求模糊、改动大、涉及架构决策</td><td>小改动可以跳过</td></tr>
-  <tr><td><span class="phase p-define">定义</span></td><td><code>grill-with-docs</code></td><td>想验证方案是否合理</td><td>大多数情况可以跳过</td></tr>
-  <tr><td><span class="phase p-plan">规划</span></td><td><code>planning-and-task-breakdown</code></td><td>任务 &gt; 3 个文件，或需要并行</td><td>单文件改动可以跳过</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>context-engineering</code></td><td>agent 输出质量下降、换模块</td><td>上下文清晰时可跳过</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>incremental-implementation</code></td><td>任何多文件改动</td><td>核心步骤，不建议跳</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>source-driven-development</code></td><td>用框架 API、不确定最佳实践</td><td>熟悉的 API 可跳过</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>doubt-driven-development</code></td><td>高风险决策、安全相关</td><td>低风险可跳过</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>tdd</code></td><td>写功能代码时同步写测试</td><td>核心步骤，不建议跳</td></tr>
-  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>合并前必做五维审查</td><td>核心步骤</td></tr>
-  <tr><td><span class="phase p-review">审查</span></td><td><code>code-simplify</code></td><td>代码太复杂需要简化</td><td>代码已简洁可跳过</td></tr>
-  <tr><td><span class="phase p-ship">发布</span></td><td><code>ship</code></td><td>一键：测试 &rarr; 审查 &rarr; bump &rarr; commit &rarr; PR</td><td>不想全自动就用 commit + PR 分步走</td></tr>
-  <tr><td><span class="phase p-ship">发布</span></td><td><code>canary</code></td><td>部署后监控</td><td>非生产环境可跳过</td></tr>
+  <tr><th>步骤</th><th>skill</th><th>调用示例</th></tr>
+  <tr><td><span class="phase p-define">定义</span></td><td><code>spec-driven-development</code></td><td>$spec-driven-development "给用户加一个角色权限系统"</td></tr>
+  <tr><td><span class="phase p-define">定义</span></td><td><code>grill-with-docs</code></td><td>$grill-with-docs 我打算用 Redis 做会话存储</td></tr>
+  <tr><td><span class="phase p-plan">规划</span></td><td><code>planning-and-task-breakdown</code></td><td>$planning-and-task-breakdown 实现用户角色权限系统</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>context-engineering</code></td><td>$context-engineering 我要改 src/auth/ 模块</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>incremental-implementation</code></td><td>$incremental-implementation 按计划逐步实现</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>source-driven-development</code></td><td>$source-driven-development Next.js middleware</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>doubt-driven-development</code></td><td>$doubt-driven-development 用 JWT 还是 session cookie</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>tdd</code></td><td>$tdd 为权限检查函数写测试</td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>$code-review-and-quality</td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-simplify</code></td><td>$code-simplify src/auth/permissions.ts</td></tr>
+  <tr><td><span class="phase p-ship">发布</span></td><td><code>canary</code></td><td>$canary 监控灰度发布</td></tr>
 </table>
 
 <h3>快速版（小功能）</h3>
@@ -289,8 +359,6 @@
   <div class="flow-row">
     <span class="step s-eng"><span class="phase p-define">定位</span>diagnose</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng"><span class="phase p-define">定位</span>investigate</span>
-    <span class="arrow">&rarr;</span>
     <span class="step s-eng"><span class="phase p-build">修复</span>tdd（写回归测试）</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-eng"><span class="phase p-review">审查</span>code-review-and-quality</span>
@@ -300,12 +368,11 @@
 </div>
 
 <table>
-  <tr><th>步骤</th><th>用什么</th><th>触发词</th></tr>
-  <tr><td><span class="phase p-define">定位</span></td><td><code>diagnose</code></td><td>硬 bug、不确定根因 — 先建反馈循环，再假设、验证、修复</td></tr>
-  <tr><td><span class="phase p-define">定位</span></td><td><code>investigate</code></td><td>系统性调查，比 diagnose 轻量</td></tr>
-  <tr><td><span class="phase p-define">定位</span></td><td><code>zoom-out</code></td><td>看不懂这段代码 — 先看模块全景</td></tr>
-  <tr><td><span class="phase p-build">修复</span></td><td><code>tdd</code></td><td>先写一个会失败的回归测试，再修</td></tr>
-  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>修完后审查修复本身 + 回归测试</td></tr>
+  <tr><th>步骤</th><th>skill</th><th>调用示例</th></tr>
+  <tr><td><span class="phase p-define">定位</span></td><td><code>diagnose</code></td><td><code>$diagnose 登录接口偶发 500 错误</code></td></tr>
+  <tr><td><span class="phase p-define">定位</span></td><td><code>zoom-out</code></td><td><code>$zoom-out src/auth/</code></td></tr>
+  <tr><td><span class="phase p-build">修复</span></td><td><code>tdd</code></td><td><code>$tdd 写回归测试防止再次出现</code></td></tr>
+  <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td><code>$code-review-and-quality</code></td></tr>
 </table>
 
 <div class="tip"><strong>关键：</strong><code>diagnose</code> 的核心是 Phase 1 — 建反馈循环。如果你能写一个失败测试来复现 bug，这个 bug 就 90% 修完了。</div>
@@ -450,58 +517,31 @@
     <span class="arrow">&rarr;</span>
     <span class="step s-prd"><span class="phase p-ship">结束</span>handoff</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-prd"><span class="phase p-growth">复盘</span>retro / weekly-review</span>
+    <span class="step s-prd"><span class="phase p-growth">复盘</span>retro</span>
   </div>
 </div>
 
 <table>
-  <tr><th>步骤</th><th>用什么</th><th>触发词</th></tr>
-  <tr><td><span class="phase p-build">恢复</span></td><td><code>context-restore</code></td><td>「resume where I left off」「restore context」「where was I」</td></tr>
-  <tr><td><span class="phase p-build">设置</span></td><td><code>context-engineering</code></td><td>新 session 或换模块 — 优化 agent 看到的信息</td></tr>
-  <tr><td><span class="phase p-ship">保存</span></td><td><code>context-save</code></td><td>「save progress」「save state」「save my work」</td></tr>
-  <tr><td><span class="phase p-ship">交接</span></td><td><code>handoff</code></td><td>交接给新 agent — 生成带建议 skill 的交接文档</td></tr>
-  <tr><td><span class="phase p-growth">复盘</span></td><td><code>retro</code></td><td>「weekly retro」「what did we ship」</td></tr>
-  <tr><td><span class="phase p-growth">复盘</span></td><td><code>weekly-review</code></td><td>按 commit 生成周报</td></tr>
-  <tr><td><span class="phase p-growth">自省</span></td><td><code>workflow-from-chats</code></td><td>从最近聊天记录里提取你的工作偏好，转化成规则</td></tr>
-  <tr><td><span class="phase p-growth">自省</span></td><td><code>show-me-your-work</code></td><td>长时间无人值守工作 — 记录每步决策供事后审查</td></tr>
+  <tr><th>步骤</th><th>skill</th><th>调用示例</th></tr>
+  <tr><td><span class="phase p-build">恢复</span></td><td><code>context-restore</code></td><td><code>$context-restore</code></td></tr>
+  <tr><td><span class="phase p-build">设置</span></td><td><code>context-engineering</code></td><td><code>$context-engineering 我要改 src/auth/ 模块</code></td></tr>
+  <tr><td><span class="phase p-ship">保存</span></td><td><code>context-save</code></td><td><code>$context-save</code></td></tr>
+  <tr><td><span class="phase p-ship">交接</span></td><td><code>handoff</code></td><td><code>$handoff</code></td></tr>
+  <tr><td><span class="phase p-growth">复盘</span></td><td><code>retro</code></td><td><code>$retro</code></td></tr>
+  <tr><td><span class="phase p-growth">自省</span></td><td><code>workflow-from-chats</code></td><td><code>$workflow-from-chats</code></td></tr>
+  <tr><td><span class="phase p-growth">自省</span></td><td><code>show-me-your-work</code></td><td><code>$show-me-your-work</code></td></tr>
 </table>
 
-<!-- ========== SCENARIO H: TOOLCHAINS ========== -->
-<h2 id="toolchains">场景 H：使用特定语言/框架</h2>
-<p class="trigger">触发词：直接用对应语言写代码时，这些 skill 会自动提供语言最佳实践</p>
-<p>这是项目最大的分类（123 skills），覆盖 15 个语言/框架。你不需要手动调用它们 — 它们在你写对应语言代码时提供上下文。</p>
-
-<div class="card-grid">
-  <div class="card"><h4>javascript/ (19)</h4><p>ES6+、模块系统、异步模式、Node.js</p></div>
-  <div class="card"><h4>platforms/ (26)</h4><p>AWS、GCP、Vercel、Netlify、Docker、Railway 等部署平台</p></div>
-  <div class="card"><h4>typescript/ (14)</h4><p>类型系统、泛型、高级类型、TS 配置</p></div>
-  <div class="card"><h4>python/ (10)</h4><p>Python 最佳实践、数据处理、脚本</p></div>
-  <div class="card"><h4>universal/ (9)</h4><p>跨语言通用模式 — 文件处理、错误处理等</p></div>
-  <div class="card"><h4>ai/ (9)</h4><p>AI/ML 相关 — 模型调用、prompt 工程</p></div>
-  <div class="card"><h4>golang/ (7)</h4><p>Go 并发模式、标准库、项目结构</p></div>
-  <div class="card"><h4>php/ (6)</h4><p>PHP 现代开发、Laravel 等</p></div>
-  <div class="card"><h4>rust/ (6)</h4><p>所有权系统、生命周期、async</p></div>
-  <div class="card"><h4>elixir/ (4)</h4><p>Phoenix 框架、OTP、并发</p></div>
-  <div class="card"><h4>ui/ (4)</h4><p>CSS、Tailwind、组件库、响应式</p></div>
-  <div class="card"><h4>visualbasic/ (4)</h4><p>VB.NET、VBA、经典 VB</p></div>
-  <div class="card"><h4>nextjs/ (3)</h4><p>App Router、SSR、ISR、API Routes</p></div>
-  <div class="card"><h4>databases/ (1)</h4><p>数据库设计和查询优化</p></div>
-  <div class="card"><h4>java/ (1)</h4><p>Java 开发模式</p></div>
-</div>
-
-<div class="tip"><strong>使用方式：</strong>当你写 Python 代码时，<code>python</code> skill 会自动提供 Python 最佳实践。结合场景 A 的流程使用 — 比如做新功能时，先走 <code>spec-driven-development</code>，然后在 implementation 阶段 toolchain skill 会自动生效。</div>
-
-<!-- ========== SCENARIO I: DOCUMENTS ========== -->
-<h2 id="documents">场景 I：文档生成</h2>
+<!-- ========== SCENARIO H: DOCUMENTS ========== -->
+<h2 id="documents">场景 H：文档生成</h2>
 <p class="trigger">触发词：「转 PDF」「生成文档」「做个 PPT」「写个报告」</p>
 
 <table>
-  <tr><th>Skill</th><th>用途</th><th>触发词</th></tr>
-  <tr><td><code>any2pdf</code></td><td>Markdown 转专业排版 PDF，支持中英文混排、代码块、表格、LaTeX 公式</td><td>「md 转 pdf」「生成报告」「typeset」</td></tr>
-  <tr><td><code>make-pdf</code></td><td>Markdown 转出版级 PDF（gstack 版本）</td><td>「make pdf」</td></tr>
-  <tr><td><code>frontend-slides</code></td><td>零依赖 HTML 演示文稿，支持动画，可从 PPT 转换</td><td>「做个 PPT」「create slides」「presentation」</td></tr>
-  <tr><td><code>document-generate</code></td><td>从代码生成缺失的文档</td><td>「generate docs」</td></tr>
-  <tr><td><code>document-release</code></td><td>发布后的文档更新</td><td>「update docs」</td></tr>
+  <tr><th>Skill</th><th>用途</th><th>调用示例</th></tr>
+  <tr><td><code>any2pdf</code></td><td>Markdown 转专业排版 PDF，支持中英文混排、代码块、表格、LaTeX 公式</td><td><code>$any2pdf 把 README.md 转成 PDF</code></td></tr>
+  <tr><td><code>make-pdf</code></td><td>Markdown 转出版级 PDF（gstack 版本）</td><td><code>$make-pdf</code></td></tr>
+  <tr><td><code>document-generate</code></td><td>从代码生成缺失的文档</td><td><code>$document-generate</code></td></tr>
+  <tr><td><code>document-release</code></td><td>发布后的文档更新</td><td><code>$document-release</code></td></tr>
 </table>
 
 <!-- ========== SCENARIO J: CROSS ========== -->
@@ -521,16 +561,38 @@
     <span class="arrow">&rarr;</span>
     <span class="step s-dsn">design-review</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng">ship</span>
+    <span class="step s-eng">pull-requests</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-eng">deploy-to-vercel</span>
   </div>
 </div>
 
+<h4>J1 完整对话示例</h4>
+<div class="scenario">
+<pre><code>我要给我们的 SaaS 产品做一个新的定价页面，需要设计感强，做完要部署到 Vercel。$frontend-design
+
+3 个档位：Starter $29/月、Pro $79/月、Enterprise 联系销售。参考 Linear 的定价页风格，简洁现代。
+
+$design-review
+
+$spec-driven-development
+
+$planning-and-task-breakdown
+
+$tdd
+
+$pull-requests
+
+$deploy-to-vercel
+
+</code></pre>
+</div>
+
 <h3>J2：功能上线 + 营销推广</h3>
+
 <div class="flow">
   <div class="flow-row">
-    <span class="step s-eng">ship</span>
+    <span class="step s-eng">pull-requests</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">launch</span>
     <span class="arrow">&rarr;</span>
@@ -544,7 +606,23 @@
   </div>
 </div>
 
-<h3>J3：产品探索 &rarr; 设计 &rarr; 开发 &rarr; 发布（全链路）</h3>
+<h4>J2 完整对话示例</h4>
+<div class="scenario">
+<pre><code>定价页面已经开发完了，PR 已合并。现在要上线并做营销推广。$launch
+
+$product-marketing
+
+$seo-content-writer
+
+$social + $emails "our new pricing page is live"
+
+$analytics
+
+</code></pre>
+</div>
+
+<h3>J3：产品探索
+ &rarr; 设计 &rarr; 开发 &rarr; 发布（全链路）</h3>
 <div class="flow">
   <div class="flow-row">
     <span class="step s-pm">grill-me</span>
@@ -559,13 +637,37 @@
     <span class="arrow">&rarr;</span>
     <span class="step s-eng">tdd</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng">ship</span>
+    <span class="step s-eng">pull-requests</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">launch</span>
   </div>
 </div>
 
+<h4>J3 完整对话示例</h4>
+<div class="scenario">
+<pre><code>我有个新想法：给我们的 SaaS 加一个 AI 助手功能。$grill-me
+
+主要是帮非技术用户自动化工作流，比如自动整理数据、生成报告。竞品有 Zapier AI 和 Notion AI。
+
+$idea-refine
+
+$to-prd
+
+$to-issues
+
+$frontend-design
+
+$tdd
+
+$pull-requests
+
+$launch
+
+</code></pre>
+</div>
+
 <h3>J4：SEO + 设计 + 开发</h3>
+
 <div class="flow">
   <div class="flow-row">
     <span class="step s-mkt">seo-audit + keyword-research</span>
@@ -580,64 +682,57 @@
   </div>
 </div>
 
+<h4>J4 完整对话示例</h4>
+<div class="scenario">
+<pre><code>我们的博客流量一直上不去，想做个 SEO 优化过的工具页面来获取长尾流量。$seo-audit + $keyword-research "project management template"
+
+$content-strategy
+
+$site-architecture
+
+$frontend-design
+
+$tdd + $incremental-implementation
+
+$seo-content-writer + $ai-seo
+
+</code></pre>
+</div>
+
 <!-- ========== DEVTOOLS ADVANCED ========== -->
 <h2 id="devtools-advanced">进阶：DevTools 高价值 skill</h2>
-<p><code>devtools/</code> 里除了 pstack 原则，还有几个值得关注的高价值 skill：</p>
+<p><code>agent/</code> 和 <code>coding/</code> 里除了 pstack 原则，还有几个值得关注的高价值 skill：</p>
 
 <table>
-  <tr><th>Skill</th><th>用途</th><th>触发词</th></tr>
-  <tr><td><code>orchestrate</code></td><td>将大任务分解为并行子任务，通过 Cursor SDK 分发给多个云 agent 执行</td><td><code>/orchestrate &lt;goal&gt;</code></td></tr>
-  <tr><td><code>ralph-loop</code></td><td>迭代自主开发循环 — 同一个 prompt 反复执行直到完成</td><td>「run a ralph loop」「start iterative loop」</td></tr>
-  <tr><td><code>workflow-from-chats</code></td><td>从最近 7 天的 Cursor 聊天记录里提取你的工作偏好，转化为规则/skill</td><td>「learn preferences」「mine feedback」</td></tr>
-  <tr><td><code>show-me-your-work</code></td><td>长时间无人值守工作时，记录每步决策的 TSV 日志供事后审查</td><td><code>/show-me-your-work</code></td></tr>
-  <tr><td><code>figure-it-out</code></td><td>大型迁移或多步变更的可审计 playbook — 没有更具体的 skill 时用这个</td><td>「figure it out」</td></tr>
-  <tr><td><code>deslop</code></td><td>清理 AI 生成的代码 slop</td><td>「deslop」「remove ai slop」</td></tr>
-  <tr><td><code>thermo-nuclear-review</code></td><td>极其严格的代码审查</td><td>「thermo nuclear review」</td></tr>
+  <tr><th>Skill</th><th>用途</th><th>调用示例</th></tr>
+  <tr><td><code>orchestrate</code></td><td>将大任务分解为并行子任务，通过 Cursor SDK 分发给多个云 agent 执行</td><td><code>$orchestrate 把 8 个 API 端点并行实现</code></td></tr>
+  <tr><td><code>workflow-from-chats</code></td><td>从最近 7 天的 Cursor 聊天记录里提取你的工作偏好，转化为规则/skill</td><td><code>$workflow-from-chats</code></td></tr>
+  <tr><td><code>show-me-your-work</code></td><td>长时间无人值守工作时，记录每步决策的 TSV 日志供事后审查</td><td><code>$show-me-your-work</code></td></tr>
+  <tr><td><code>context-save</code></td><td>保存当前工作上下文，下次 session 可恢复</td><td><code>$context-save</code></td></tr>
+  <tr><td><code>figure-it-out</code></td><td>大型迁移或多步变更的可审计 playbook — 没有更具体的 skill 时用这个</td><td><code>$figure-it-out 把代码库从 Express 迁移到 Fastify</code></td></tr>
+  <tr><td><code>deslop</code></td><td>清理 AI 生成的代码 slop</td><td><code>$deslop src/components/</code></td></tr>
+  <tr><td><code>thermo-nuclear-review</code></td><td>极其严格的代码审查</td><td><code>$thermo-nuclear-review</code></td></tr>
 </table>
-
-<h3>Universal 跨栈 skill（41 个）</h3>
-<p>这些 skill 不限语言，覆盖通用工程场景：</p>
-
-<div class="card-grid">
-  <div class="card"><h4>debugging/ (3)</h4><p>root-cause-tracing、systematic-debugging、verification-before-completion</p></div>
-  <div class="card"><h4>testing/ (5)</h4><p>TDD、test-quality-inspector、testing-anti-patterns、webapp-testing、condition-based-waiting</p></div>
-  <div class="card"><h4>security/ (2)</h4><p>security-scanning、threat-modeling</p></div>
-  <div class="card"><h4>collaboration/ (9)</h4><p>brainstorming、dispatching-parallel-agents、git-workflow、stacked-prs、writing-plans 等</p></div>
-  <div class="card"><h4>web/ (3)</h4><p>api-design-patterns、api-documentation、web-performance-optimization</p></div>
-  <div class="card"><h4>infrastructure/ (3)</h4><p>env-manager、kubernetes、terraform</p></div>
-  <div class="card"><h4>data/ (5)</h4><p>database-migration、json-data-handling、reporting-pipelines、xlsx 等</p></div>
-  <div class="card"><h4>verification/ (3)</h4><p>bug-fix、pre-merge、screenshot 验证</p></div>
-  <div class="card"><h4>其他</h4><p>architecture、main（skill-creator 等）、observability、orchestration、process</p></div>
-</div>
 
 <!-- ========== CATEGORIES ========== -->
 <h2 id="categories">全部分类速查</h2>
-<p>项目里有 400+ skills，按 17 个目录组织。下表按 skill 数量排序。</p>
+<p>项目有 348 skills，按 8 个目录组织。下表按 skill 数量排序。</p>
 
 <table>
   <tr><th>分类</th><th>数量</th><th>用途</th></tr>
-  <tr><td><code>toolchains/</code></td><td>123</td><td>语言/框架专精 — JS/TS、Python、Rust、Go、Elixir、PHP、Java、UI、数据库、AI、部署平台</td></tr>
-  <tr><td><code>engineering/</code></td><td>74</td><td>编码、测试、审查、部署、React/Next.js、CI/CD。核心工程工作流</td></tr>
-  <tr><td><code>marketing/</code></td><td>65</td><td>SEO、GEO、广告、文案、分析、增长、销售赋能。营销全流程</td></tr>
-  <tr><td><code>devtools/</code></td><td>65</td><td>Cursor 插件、IDE 工作流、pstack 原则（19 条）、团队协作工具</td></tr>
-  <tr><td><code>gstack/</code></td><td>59</td><td>iOS 开发、设计工作流、部署、QA、浏览器自动化、brainstorming</td></tr>
-  <tr><td><code>universal/</code></td><td>41</td><td>跨栈技能 — 调试、安全、测试、验证、基础设施、编排</td></tr>
-  <tr><td><code>design/</code></td><td>30</td><td>UI/UX、设计系统、视觉品味、图片生成、动画</td></tr>
-  <tr><td><code>productivity/</code></td><td>10</td><td>Prompt 增强、写作、brainstorming、agent skill 管理、handoff</td></tr>
-  <tr><td><code>misc/</code></td><td>11</td><td>实验性或窄范围 skill</td></tr>
-  <tr><td><code>product-management/</code></td><td>7</td><td>PM 基础、增长、创业、工程领导力</td></tr>
-  <tr><td><code>documents/</code></td><td>5</td><td>文档生成 — PDF、HTML slides</td></tr>
-  <tr><td><code>mobile/</code></td><td>5</td><td>iOS 开发、设计审查、QA</td></tr>
-  <tr><td><code>learning-and-growth/</code></td><td>4</td><td>自我提升、写作计划、interview、writing-skills</td></tr>
-  <tr><td><code>personal/</code></td><td>2</td><td>个人定制 — 文章编辑、Obsidian 笔记管理</td></tr>
-  <tr><td><code>research/</code></td><td>1</td><td>研究和新闻监控（last30days）</td></tr>
-  <tr><td><code>agent-browser/</code></td><td>1</td><td>浏览器自动化 CLI</td></tr>
-  <tr><td><code>in-progress/</code></td><td>5</td><td>开发中的 skill</td></tr>
+  <tr><td><code>coding/</code></td><td>103</td><td>编码、测试、审查、部署、TDD、诊断、Git 工作流。核心工程工作流</td></tr>
+  <tr><td><code>agent/</code></td><td>94</td><td>Agent 工作流、上下文管理、session 交接、pstack 原则（19 条）、orchestrate、brainstorming</td></tr>
+  <tr><td><code>marketing/</code></td><td>68</td><td>SEO、GEO、广告、文案、分析、增长、销售赋能。营销全流程</td></tr>
+  <tr><td><code>design/</code></td><td>34</td><td>UI/UX、设计系统、视觉品味、图片生成、动画、Figma</td></tr>
+  <tr><td><code>product/</code></td><td>18</td><td>PM 基础、需求、规划、评审、创业、工程领导力</td></tr>
+  <tr><td><code>devops/</code></td><td>13</td><td>CI/CD、Docker、Kubernetes、Terraform、Vercel 部署、Canary</td></tr>
+  <tr><td><code>writing/</code></td><td>13</td><td>文档生成、PDF、报告、文章编辑、Obsidian 笔记</td></tr>
+  <tr><td><code>data/</code></td><td>5</td><td>数据库迁移、JSON 处理、SEC EDGAR、Excel</td></tr>
 </table>
 
 <!-- ========== PRINCIPLES ========== -->
 <h2 id="principles">pstack 原则（19 条工程信条）</h2>
-<p>来自 <a href="https://github.com/cursor/plugins">cursor/plugins</a> 仓库的 pstack 原则。这些不是流程 skill，而是你做工程决策时的指导原则。遇到「该不该这样做」的纠结时，回来翻翻。</p>
+<p>来自 <code>agent/</code> 目录的 pstack 原则。这些不是流程 skill，而是你做工程决策时的指导原则。遇到「该不该这样做」的纠结时，回来翻翻。</p>
 
 <table>
   <tr><th>原则</th><th>核心含义</th><th>什么时候用</th></tr>
@@ -669,16 +764,13 @@
 <table>
   <tr><th>来源</th><th>贡献领域</th></tr>
   <tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td>工程核心流程（TDD、diagnose、planning、spec-driven-development 等）</td></tr>
-  <tr><td><a href="https://github.com/garrytan/gstack">garrytan/gstack</a></td><td>iOS、部署、QA、brainstorming、weekly-review、ship、canary 等</td></tr>
   <tr><td><a href="https://github.com/vercel-labs/agent-skills">vercel-labs/agent-skills</a></td><td>CI/CD、前端工程、deploy-to-vercel</td></tr>
   <tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td>SEO、增长、文案、广告、分析（65 个 marketing skills）</td></tr>
   <tr><td><a href="https://github.com/aaron-he-zhu/seo-geo-claude-skills">aaron-he-zhu/seo-geo-claude-skills</a></td><td>SEO/GEO 专精（关键词、Schema、AI SEO、监控）</td></tr>
-  <tr><td><a href="https://github.com/cursor/plugins">cursor/plugins</a></td><td>Cursor IDE 集成、pstack 原则（19 条）、orchestrate、ralph-loop</td></tr>
   <tr><td><a href="https://github.com/wshobson/agents">wshobson/agents</a></td><td>UI 设计、可访问性</td></tr>
   <tr><td><a href="https://github.com/bobmatnyc/claude-mpm-skills">bobmatnyc/claude-mpm-skills</a></td><td>多 agent 编排、协作模式</td></tr>
   <tr><td><a href="https://github.com/sickn33/antigravity-awesome-skills">sickn33/antigravity-awesome-skills</a></td><td>AI agent 架构设计</td></tr>
   <tr><td><a href="https://github.com/lovstudio/any2pdf">lovstudio/any2pdf</a></td><td>Markdown 转 PDF</td></tr>
-  <tr><td><a href="https://github.com/zarazhangrui/frontend-slides">zarazhangrui/frontend-slides</a></td><td>HTML 演示文稿</td></tr>
   <tr><td>szj2ys/skills（原创）</td><td>手写 skill、整合、lock 文件管理</td></tr>
 </table>
 
