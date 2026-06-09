@@ -1,11 +1,10 @@
 ---
 name: analysis
 description: |
-  Horizontal-Vertical Analysis deep research skill. Created by Digital Lifeform Khazix, it draws on Saussure's diachronic-synchronic analysis, social science longitudinal and cross-sectional research designs, business school case study methods, and competitive strategy analysis.
-  Use when the user wants to systematically research a product, company, concept, technology, or person. The core is dual-axis analysis: the vertical axis traces the subject's full life story from origin to present (presented as narrative), the horizontal axis performs a systematic cross-sectional comparison with competitors or peers at the current moment, and finally the two axes are crossed to produce original insights. The final output is a beautifully formatted PDF research report.
-  Trigger phrases include but are not limited to: horizontal-vertical analysis, research this for me, help me analyze, deep research, do a research, investigate this, competitive analysis, help me figure out what this thing is, what's the deal with this product/company/concept, help me get to the bottom of this, help me understand this, help me do a deep research.
-  Even if the user just says "help me learn about XX" or "what's XX's background," as long as the context suggests they need systematic deep research (rather than a simple concept explanation), it should trigger. It also applies when a user drops a product name, company name, or technical term and says "look into this for me."
-  Do not use for simple definitions (user is just asking "what is XX"), do not use for WeChat article writing (use writer for that), do not use for pure title/summary generation (use wechat-title).
+  Horizontal-Vertical Analysis deep research skill for systematically researching a product, company, concept, technology, or person. 
+  The core is dual-axis analysis: the vertical axis traces the subject's full life story from origin to present, the horizontal axis performs a cross-sectional comparison with competitors/peers, crossing both to produce original insights. Final output is a beautifully formatted PDF.
+  Trigger phrases: horizontal-vertical analysis, research this for me, help me analyze, deep research, investigate this, competitive analysis, what's the deal with this, help me get to the bottom of this. Also triggers for deep "help me learn about XX" or "look into this for me".
+  Do not use for simple definitions, WeChat article writing (use writer), or pure title/summary generation (use wechat-title).
 ---
 
 # Horizontal-Vertical Analysis Deep Research
