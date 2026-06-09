@@ -1,6 +1,6 @@
 # szj2ys/skills
 
-A categorized collection of 346 skills for AI agents.
+A categorized collection of 344 skills for AI agents.
 
 ## Installation
 
@@ -10,12 +10,12 @@ npx skills add szj2ys/skills
 
 ## Skill Categories
 
-- **`agent/`** — Agent workflows, orchestration, context management, CLI tools, agent-specific integrations (93 skills)
+- **`agent/`** — Agent workflows, orchestration, context management, CLI tools, agent-specific integrations (92 skills)
 - **`coding/`** — Code review, testing, debugging, git workflows, language/framework-specific patterns, security (102 skills)
 - **`data/`** — Data pipelines, JSON, Excel, database migrations, reporting (5 skills)
 - **`design/`** — UI/UX, design systems, visual taste, image generation, animation, accessibility (34 skills)
 - **`devops/`** — CI/CD, deployment, Docker, Kubernetes, Terraform, observability (13 skills)
-- **`marketing/`** — SEO, GEO, ads, copywriting, analytics, growth, sales enablement (68 skills)
+- **`marketing/`** — SEO, GEO, ads, copywriting, analytics, growth, sales enablement (67 skills)
 - **`product/`** — PM fundamentals, product strategy, leadership, pricing, user research (18 skills)
 - **`writing/`** — Content creation, editing, documentation, writing frameworks (13 skills)
 
