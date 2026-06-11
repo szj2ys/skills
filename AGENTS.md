@@ -6,7 +6,7 @@ This is **szj2ys/skills** — a personal skills library for AI agents. Each subd
 
 ## Skill Home Rule
 
-**All skill creation, updates, and management default to this project.**
+**All skill creation, updates, and management default to this project's skills directory, rather than .agents/skills.**
 
 Unless the user explicitly specifies a different directory or project, any request to:
 - Create a new skill
