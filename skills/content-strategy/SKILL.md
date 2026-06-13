@@ -361,5 +361,5 @@ Visual or structured representation of how content interconnects.
 - **ai-seo**: For optimizing content for AI search engines and getting cited by LLMs
 - **programmatic-seo**: For scaled content generation
 - **site-architecture**: For page hierarchy, navigation design, and URL structure
-- **emails**: For email-based content
+- content-strategy: For content and email-based content
 - **social**: For social media content

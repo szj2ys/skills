@@ -404,7 +404,7 @@ Only ask if not answered by context or input:
 
 - **competitors**: For creating comparison/alternative pages from these profiles
 - **prospecting**: For broader list-building qualification (this skill does deep research on specific accounts; prospecting builds the initial list)
-- **customer-research**: For mining reviews and community sentiment in depth
+- **analysis**: For deep research and competitor sentiment analysis
 - **content-strategy**: For using competitor content gaps to plan your own content
 - **seo-audit**: For auditing your own site relative to competitors
 - **sales-enablement**: For turning profiles into battle cards and sales collateral

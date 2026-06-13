@@ -178,7 +178,7 @@ $frontend-design 设计一个定价页面，参考 Linear 风格
 
 $code-review-and-quality
 
-$context-engineering 我要改 src/auth/ 模块
+我来拆解并开始实现 auth/ 的改造
 
 $canary 监控灰度发布
 </code></pre>
@@ -301,9 +301,9 @@ $grill-me + $idea-refine + $to-prd
     <span class="arrow">&rarr;</span>
     <span class="step s-eng"><span class="phase p-plan">规划</span>planning-and-task-breakdown</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng"><span class="phase p-build">构建</span>context-engineering</span>
+    <span class="step s-eng"><span class="phase p-build">构建</span>grill-with-docs</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng"><span class="phase p-build">构建</span>incremental-implementation</span>
+    <span class="step s-eng"><span class="phase p-build">构建</span>tdd</span>
   </div>
   <div class="flow-row">
     <span class="step s-eng"><span class="phase p-build">构建</span>tdd</span>
@@ -329,9 +329,9 @@ $grill-me + $idea-refine + $to-prd
   <tr><td><span class="phase p-define">定义</span></td><td><code>spec-driven-development</code></td><td>$spec-driven-development "给用户加一个角色权限系统"</td></tr>
   <tr><td><span class="phase p-define">定义</span></td><td><code>grill-with-docs</code></td><td>$grill-with-docs 我打算用 Redis 做会话存储</td></tr>
   <tr><td><span class="phase p-plan">规划</span></td><td><code>planning-and-task-breakdown</code></td><td>$planning-and-task-breakdown 实现用户角色权限系统</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>context-engineering</code></td><td>$context-engineering 我要改 src/auth/ 模块</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>incremental-implementation</code></td><td>$incremental-implementation 按计划逐步实现</td></tr>
-  <tr><td><span class="phase p-build">构建</span></td><td><code>source-driven-development</code></td><td>$source-driven-development Next.js middleware</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>grill-with-docs</code></td><td>我来拆解并开始实现 auth/ 的改造</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>tdd</code></td><td>$tdd 按计划逐步实现</td></tr>
+  <tr><td><span class="phase p-build">构建</span></td><td><code>grill-with-docs</code></td><td>$grill-with-docs Next.js middleware 实现</td></tr>
   <tr><td><span class="phase p-build">构建</span></td><td><code>doubt-driven-development</code></td><td>$doubt-driven-development 用 JWT 还是 session cookie</td></tr>
   <tr><td><span class="phase p-build">构建</span></td><td><code>tdd</code></td><td>$tdd 为权限检查函数写测试</td></tr>
   <tr><td><span class="phase p-review">审查</span></td><td><code>code-review-and-quality</code></td><td>$code-review-and-quality</td></tr>
@@ -342,7 +342,7 @@ $grill-me + $idea-refine + $to-prd
 <h3>快速版（小功能）</h3>
 <div class="flow">
   <div class="flow-row">
-    <span class="step s-eng">incremental-implementation</span>
+    <span class="step s-eng">tdd</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-eng">tdd</span>
     <span class="arrow">&rarr;</span>
@@ -390,7 +390,7 @@ $grill-me + $idea-refine + $to-prd
     <span class="arrow">&rarr;</span>
     <span class="step s-eng"><span class="phase p-plan">规划</span>planning-and-task-breakdown</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng"><span class="phase p-build">执行</span>incremental-implementation</span>
+    <span class="step s-eng"><span class="phase p-build">执行</span>tdd</span>
   </div>
   <div class="flow-row">
     <span class="step s-eng"><span class="phase p-review">简化</span>code-simplify</span>
@@ -431,7 +431,7 @@ $grill-me + $idea-refine + $to-prd
 <h3>D2：营销文案</h3>
 <div class="flow">
   <div class="flow-row">
-    <span class="step s-mkt">customer-research</span>
+    <span class="step s-mkt">competitor-profiling</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">marketing-psychology</span>
     <span class="arrow">&rarr;</span>
@@ -446,11 +446,11 @@ $grill-me + $idea-refine + $to-prd
 <h3>D3：产品发布</h3>
 <div class="flow">
   <div class="flow-row">
-    <span class="step s-mkt">launch</span>
+    <span class="step s-mkt">product-marketing</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">product-marketing</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-mkt">emails / social</span>
+    <span class="step s-mkt">content-strategy / social</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">analytics</span>
   </div>
@@ -472,7 +472,7 @@ $grill-me + $idea-refine + $to-prd
   <div class="flow-row">
     <span class="step s-dsn"><span class="phase p-review">审查</span>design-review / design-consultation</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-dsn"><span class="phase p-review">修复</span>redesign-skill</span>
+    <span class="step s-dsn"><span class="phase p-review">修复</span>design-review</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-dsn"><span class="phase p-ship">导出</span>design-md / extract-static-html</span>
   </div>
@@ -509,7 +509,7 @@ $grill-me + $idea-refine + $to-prd
   <div class="flow-row">
     <span class="step s-prd"><span class="phase p-build">开始</span>context-restore</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-prd"><span class="phase p-build">开始</span>context-engineering</span>
+    <span class="step s-prd"><span class="phase p-build">开始</span>grill-with-docs</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-opt">...工作中...</span>
     <span class="arrow">&rarr;</span>
@@ -524,7 +524,7 @@ $grill-me + $idea-refine + $to-prd
 <table>
   <tr><th>步骤</th><th>skill</th><th>调用示例</th></tr>
   <tr><td><span class="phase p-build">恢复</span></td><td><code>context-restore</code></td><td><code>$context-restore</code></td></tr>
-  <tr><td><span class="phase p-build">设置</span></td><td><code>context-engineering</code></td><td><code>$context-engineering 我要改 src/auth/ 模块</code></td></tr>
+  <tr><td><span class="phase p-build">设置</span></td><td><code>grill-with-docs</code></td><td><code>我来拆解并开始实现 auth/ 的改造</code></td></tr>
   <tr><td><span class="phase p-ship">保存</span></td><td><code>context-save</code></td><td><code>$context-save</code></td></tr>
   <tr><td><span class="phase p-ship">交接</span></td><td><code>handoff</code></td><td><code>$handoff</code></td></tr>
   <tr><td><span class="phase p-growth">复盘</span></td><td><code>retro</code></td><td><code>$retro</code></td></tr>
@@ -594,13 +594,13 @@ $deploy-to-vercel
   <div class="flow-row">
     <span class="step s-eng">pull-requests</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-mkt">launch</span>
+    <span class="step s-mkt">product-marketing</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">product-marketing</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">seo-content-writer</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-mkt">social / emails</span>
+    <span class="step s-mkt">social / content-strategy</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">analytics</span>
   </div>
@@ -608,13 +608,13 @@ $deploy-to-vercel
 
 <h4>J2 完整对话示例</h4>
 <div class="scenario">
-<pre><code>定价页面已经开发完了，PR 已合并。现在要上线并做营销推广。$launch
+<pre><code>定价页面已经开发完了，PR 已合并。现在要上线并做营销推广。$product-marketing
 
 $product-marketing
 
 $seo-content-writer
 
-$social + $emails "our new pricing page is live"
+\$social + \$content-strategy "our new pricing page is live"
 
 $analytics
 
@@ -639,7 +639,7 @@ $analytics
     <span class="arrow">&rarr;</span>
     <span class="step s-eng">pull-requests</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-mkt">launch</span>
+    <span class="step s-mkt">product-marketing</span>
   </div>
 </div>
 
@@ -661,7 +661,7 @@ $tdd
 
 $pull-requests
 
-$launch
+$product-marketing
 
 </code></pre>
 </div>
@@ -676,7 +676,7 @@ $launch
     <span class="arrow">&rarr;</span>
     <span class="step s-dsn">frontend-design</span>
     <span class="arrow">&rarr;</span>
-    <span class="step s-eng">tdd + incremental-implementation</span>
+    <span class="step s-eng">tdd</span>
     <span class="arrow">&rarr;</span>
     <span class="step s-mkt">seo-content-writer + ai-seo</span>
   </div>
@@ -692,7 +692,7 @@ $site-architecture
 
 $frontend-design
 
-$tdd + $incremental-implementation
+$tdd
 
 $seo-content-writer + $ai-seo
 
