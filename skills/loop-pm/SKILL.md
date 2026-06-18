@@ -36,12 +36,12 @@ The Issue must have exactly one of the following state labels (in addition to th
 
 # Execution Loop
 
-As long as there is an open PRD Issue in the system, or there is a new requirement to be written, you must poll every 10 minutes continuously. Never exit until all PRDs are closed and data loops are fully realized.
+Only active and open issues are evaluated in this loop. You must explicitly filter and query only open issues (e.g., `is:open state:open label:prd`), and completely ignore any closed issues. As long as there is an open PRD Issue in the system, or you can discover new high-value improvement opportunities, you must poll continuously.
 
 ```
 ┌──────────────────────────────────────────────┐
 │             Status Scan (Phase 0)            │
-│       Query all open PRD issues              │
+│  Query ONLY open PRD issues (is:open label:prd)│
 └──────────────────────┬───────────────────────┘
                        │
          ┌─────────────┴─────────────┐
@@ -49,12 +49,15 @@ As long as there is an open PRD Issue in the system, or there is a new requireme
   [Open PRDs Exist]          [0 Open PRDs]
          │                           │
          │                           ▼
-         │                   New requirement input?
-         │                     ├─ Yes ──→ Enter Phase 1 (Create PRD Context)
-         │                     │          Go to → [Continue Polling]
-         │                     └─ No  ──→ Output iteration summary, safe exit.
+         │                   Has active input or proactive discovery needed?
+         │                     ├─ Yes (User Input) ──────→ Phase 1a (Create PRD Context from input)
+         │                     │                           Go to → [Continue Polling]
+         │                     ├─ Yes (Proactive Discovery)→ Phase 1b (Data-Driven Product Discovery)
+         │                     │                           → Create & publish a brand-new open PRD Issue!
+         │                     │                           Go to → [Continue Polling]
+         │                     └─ No ────────────────────→ Output iteration summary, safe exit.
          ▼
-Status Scan & High-Frequency Response (Process each Issue)
+Status Scan & High-Frequency Response (Process each OPEN Issue)
          │
          ▼
 Output Current Turn Summary → [Wait 10 Minutes] → Back to Status Scan
@@ -66,7 +69,7 @@ Output Current Turn Summary → [Wait 10 Minutes] → Back to Status Scan
 
 Executed first in every loop iteration to guarantee rapid response times.
 
-Scan all Open issues labeled with `prd` and perform the corresponding action:
+Scan **ONLY open issues** (strictly filter using `state:open` / `is:open` to completely exclude any closed issues) labeled with `prd` and perform the corresponding action. Under no circumstances should closed issues be scanned, modified, or replied to:
 
 | Current Label | PM Action | Label Transition & Next Steps |
 |---|---|---|
@@ -80,7 +83,7 @@ Scan all Open issues labeled with `prd` and perform the corresponding action:
 
 ---
 
-# Phase 1: Create/Iterate PRD (Context Generation)
+# Phase 1a: Create/Iterate PRD from Input (Context Generation)
 
 Triggered when there are 0 active Open PRDs and new input (e.g., user instructions, business goals, `REQUIREMENTS.md`) is available:
 
@@ -92,8 +95,61 @@ Triggered when there are 0 active Open PRDs and new input (e.g., user instructio
     - **Acceptance Criteria**: Formatted strictly in **Given/When/Then** to ensure the technical solution is highly measurable.
 
 2. **Issue Publication**:
-    - Create the Issue with title: `[PRD] <Module> - <Core Metric>`. Add only the `prd` label (do not add state labels; wait for engineering to claim).
+    - Create the Issue with title: `[PRD] <Module> - <Core Metric>`. Add only the `prd` label (do not add state labels; wait for engineering to claim). Ensure the issue is created in an **open** state.
     - Return immediately to the execution loop, scanning every 10 minutes until the issue is closed.
+
+---
+
+# Phase 1b: Proactive Product Discovery (No Active Open PRDs)
+
+Triggered when there are 0 active Open PRDs, no active development is running, and no new explicit requirements are inputted. Do NOT simply exit or idle. A ByteDance-style PM always finds the next highest-leverage opportunity through data and user insights. Follow this data-driven discovery loop:
+
+### Step 1: Data & Funnel Analysis (数据驱动)
+
+Start from available data sources — analytics dashboards, database records, API logs, user activity data, or any measurable signals in the project:
+
+- **North Star Metric Baseline**: What is the current state of the core metric? (e.g., DAU, retention, conversion rate, task completion time)
+- **Funnel Mapping**: Reconstruct the primary user conversion funnel end-to-end. Identify each step users go through, and quantify the drop-off rate at each stage.
+- **Drop-off Hotspots**: Pinpoint the exact step(s) with the highest absolute drop-off — this is where the biggest ROI opportunity lives.
+- **Quantitative Backing**: Every identified opportunity must come with a number — a percentage, a count, a rate. "Users seem to struggle" is not acceptable; "47% of users abandon at step 3" is.
+
+### Step 2: User Journey & Experience Audit (用户旅程)
+
+From the user's perspective, walk through the complete journey:
+
+- **Core Flows**: Map the primary happy paths (registration, onboarding, core task completion, payment, etc.)
+- **Friction Points**: Where do users get confused, wait too long, encounter errors, or face decision paralysis?
+- **Missing Feedback**: Where does the UI lack loading states, success confirmations, error recovery, or progress indicators?
+- **Cognitive Load**: Where is the information density too high? Where are users asked to make too many decisions at once?
+- **Unmet Expectations**: Compare the product's current experience against what users would expect from a best-in-class competitor in this category.
+
+### Step 3: Competitive & Market Lens (竞品对标)
+
+Quick but focused competitive scan:
+
+- **Top 2-3 Competitors**: What are they doing better in the same user flow? What features or UX patterns have they adopted that this product hasn't?
+- **Market Trends**: Are there emerging user expectations or industry shifts (e.g., AI-assisted flows, mobile-first patterns) that represent a high-leverage opportunity?
+- **Differentiation Gap**: Where is this product falling behind the market baseline? Falling behind baseline is higher priority than chasing nice-to-haves.
+
+### Step 4: ICE Scoring & Opportunity Selection (机会排序)
+
+Score every discovered opportunity using ICE (Impact x Confidence x Ease):
+
+- **Impact [1-5]**: How much will this move the North Star Metric? (Quantified from Step 1 data)
+- **Confidence [1-5]**: How confident are we this will work? (Higher if backed by data or validated by competitive evidence)
+- **Ease [1-5]**: How simple is the engineering implementation? (Lower complexity = higher score)
+
+Select the **single highest ICE score** opportunity as the next PRD to write. Do not bundle multiple unrelated improvements into one PRD — keep it focused on the one highest-leverage change.
+
+### Step 5: PRD Publication (需求输出)
+
+Author the PRD using the same **High-Leverage PRD Framework** (Background & ROI, North Star Metric, Guardrail Metrics, ICE Scoring, Given/When/Then Acceptance Criteria), but with a critical difference — every section must be backed by the data from Step 1:
+
+- **Background**: Cite the specific funnel drop-off rate or user pain metric.
+- **Expected Lift**: State the projected impact on the North Star Metric with a number and reasoning (e.g., "Reducing step 3 friction could improve conversion by 8-12% based on the current drop-off rate").
+- **Acceptance Criteria**: Must include measurable verification — the change must be observable in data, not just "looks better".
+
+Publish as a brand-new **open** PRD Issue titled `[PRD] <Module> - <Core Metric>`, labeled with `prd`. This kicks off a fresh iteration loop and signals to the Feature Owner that a data-backed, high-value task is ready to be claimed.
 
 ---
 
