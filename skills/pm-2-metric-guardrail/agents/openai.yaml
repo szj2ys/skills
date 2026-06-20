@@ -1,0 +1,5 @@
+default_prompt: Help me define the North Star Metric and Guardrail Metrics for our
+  new feature.
+display_name: Metric Selection & Guardrail Setup
+short_description: Establishing target metrics and safety guardrails to evaluate product
+  success.
