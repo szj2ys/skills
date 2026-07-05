@@ -1,0 +1,4 @@
+interface:
+  display_name: "Find Unknowns"
+  short_description: "Surface blind spots before, during, and after coding."
+  default_prompt: "Use $find-unknowns to do a blind-spot pass on my current task and surface the unknowns I should clarify before implementing."
