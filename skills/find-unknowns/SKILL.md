@@ -3,8 +3,6 @@ name: find-unknowns
 description: Surface hidden assumptions, blind spots, and unconsidered unknowns before, during, and after implementation. Use when starting work in unfamiliar territory or a new part of the codebase, planning or prototyping a feature, interviewing the user to clarify requirements, requesting a reference to mimic, reviewing an implementation plan, logging deviations during execution, packaging a pitch/explainer for stakeholders, or quizzing the user to verify they understand a change before merging.
 ---
 
-# Find Unknowns
-
 ## Overview
 
 The map (your prompt, plan, and skills) is not the territory (the real codebase and its constraints). The gap between them is the unknowns. This skill gives a repeatable loop for discovering and verbalizing unknowns before, during, and after implementation so that decisions are made deliberately, not by default.
