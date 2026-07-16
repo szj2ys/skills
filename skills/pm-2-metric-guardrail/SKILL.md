@@ -17,7 +17,8 @@ This skill formalizes product goals into rigorous metrics. To avoid optimizing a
 
 ### A. The Single North Star Metric (NSM)
 The unambiguous rate or ratio that defines success.
-- **Rate or Ratio**: Always avoid absolute numbers (like "total sign-ups"). Use ratios like "Checkout Completion Rate" or "Conversion Rate" to ensure scalability.
+- **Rate or Ratio**: The NSM itself must be a rate or ratio (e.g., "Checkout Completion Rate", "Conversion Rate", "CAC / LTV ratio"). This ensures the metric remains meaningful as the user base scales.
+- **Absolute numbers as inputs, not the NSM**: Absolute business metrics like "total sign-ups" or "GMV" can feed into ratio calculations (e.g., GMV per active user, sign-up rate), but they must never be the NSM directly.
 - **Direct Attribution**: It must directly reflect the user behavior we are changing.
 
 ### B. Core Business Guardrails

@@ -1,0 +1,4 @@
+interface:
+  display_name: "得到课程品控与要素检验"
+  short_description: "得到品控手册课程品质评价与要素检验方法论"
+  default_prompt: "使用 $get4-course-quality 来评估课程品质，进行要素检验，确保课程内容达到高标准交付要求。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "得到课程大纲设计"
+  short_description: "得到品控手册课程大纲设计方法论涵盖认知拼图与学习路径"
+  default_prompt: "使用 $get2-course-outline 来设计课程大纲，构建认知拼图和学习路径。"

@@ -1,6 +1,6 @@
 ---
 name: pm-1-funnel-diagnostic
-description: Core ByteDance product diagnostic workflow for identifying business leverage points and defining conversion funnels. Use when you need to decide what to build, diagnose where users are dropping off, or calculate the ROI of an optimization.
+description: Core ByteDance product diagnostic workflow for identifying business leverage points and defining conversion funnels. Use when you need to decide what to build, diagnose where users are dropping off, or estimate the value uplift of an optimization.
 ---
 
 # Funnel Diagnostic & Leverage Mining (Flywheel Step 1)
@@ -8,7 +8,7 @@ description: Core ByteDance product diagnostic workflow for identifying business
 This skill implements the canonical ByteDance diagnostic phase. In ByteDance, deciding **what to do** is far more critical than *how to do it*. We replace subjective intuition with math-backed customer journeys.
 
 ## 🌀 The Flywheel Connection
-- **Upstream Input (from `pm-5-ab-tracking`)**: Real post-launch user telemetry, empirical conversion rates, and updated behavioral baselines.
+- **Upstream Input**: None (flywheel entry point). On subsequent cycles, `pm-5-ab-tracking` feeds back real post-launch user telemetry, empirical conversion rates, and updated behavioral baselines.
 - **Downstream Output (to `pm-2-metric-guardrail`)**: An identified high-leverage drop-off bottleneck and a quantified target metric lift.
 
 ---
@@ -27,7 +27,7 @@ When auditing an opportunity, the PM must answer these core questions:
 3. **Where is the single biggest leak/drop-off hotspot?** (Must be backed by quantitative evidence or a strong, visible-friction hypothesis if cold starting).
 4. **Why now? What happens if we do nothing?** (Assess urgency and opportunity cost).
 5. **Is this a growth, retention, or monetization lever?** (Classify the business impact).
-6. **What is the expected ROI?** Multiply the projected conversion lift by total traffic to estimate the volume increase.
+6. **What is the expected value uplift?** Multiply the projected conversion lift by total traffic to estimate the incremental value actions, then compare against implementation cost to assess priority.
 
 ---
 
@@ -46,7 +46,7 @@ When auditing an opportunity, the PM must answer these core questions:
 - **Qualitative Friction**: [Why do users fail here? e.g., overwhelming form inputs, slow load]
 - **Target Improvement**: Lift transition rate from [A]% baseline to [B]%.
 
-#### 3. ROI & Business Leverage
+#### 3. Value Uplift & Business Leverage
 - **Leverage Dimension**: [Growth / Retention / Monetization]
 - **North Star Impact**: Projected end-to-end lift of [Z]%.
 - **Daily Volume Increase**: +[N] [Value Actions] per day.

@@ -26,6 +26,8 @@ To isolate variables and guarantee that changes in metrics are due to our featur
 - **Enrollment Trigger**: User is enrolled strictly when they encounter the modified flow (not on app launch).
 - **Allocation**: Divide traffic (e.g., 50% Control [Old experience], 50% Treatment [New experience]).
 - **Statistical Significance Goal**: Run the experiment until $p < 0.05$ (95% confidence) before deciding to scale or roll back.
+- **Statistical Power**: Target at least 80% power (1 - β) to ensure the experiment can detect a true effect of the expected size. Underpowered experiments risk false negatives—concluding a feature has no impact when it actually does.
+- **Minimum Detectable Effect (MDE)**: Define the smallest metric lift that is both statistically detectable and business-meaningful. Calculate required sample size from baseline rate, MDE, significance level (α = 0.05), and power (1 - β = 0.80). Do not launch the experiment without confirming the sample size is achievable within the planned duration.
 
 ---
 
@@ -57,6 +59,6 @@ To isolate variables and guarantee that changes in metrics are due to our featur
 | `[event_name_error]` | Exception encountered | `user_id`, `session_id`, `error_type` | Measure failure rates from Step 4. |
 
 #### 3. Success Threshold & Closing the Flywheel
-- **Primary Success Criteria**: North Star Metric lift is statistically significant ($p < 0.05$).
+- **Primary Success Criteria**: North Star Metric lift is statistically significant ($p < 0.05$) with at least 80% power and a pre-defined MDE that is business-meaningful.
 - **Closing the Flywheel**: Post-launch empirical data, error distribution, and updated baselines will be fed directly back into `pm-1-funnel-diagnostic` to construct the next iteration's funnel and expose the next leverage leak.
 ```

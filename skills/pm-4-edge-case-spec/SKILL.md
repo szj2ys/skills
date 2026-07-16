@@ -33,6 +33,7 @@ For every MVP feature, you must explicitly specify the system behavior across th
 - **Empty States**: Clear illustration and action when no records exist.
 - **Overflow States**: Wrap or truncate with ellipsis for long text.
 - **Limits**: Behavior when counts are zero, negative, or exceed maximum bounds.
+- **Concurrent Write Conflicts**: Behavior when the same user (or multiple users) modifies the same record from different sessions or devices simultaneously. Specify the conflict-resolution strategy (last-write-wins, merge, optimistic locking, or server-side validation).
 
 ### Dimension 3: User Interaction Extremes
 - Frontend button disabling on click to block spam.

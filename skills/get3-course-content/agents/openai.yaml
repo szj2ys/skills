@@ -1,0 +1,4 @@
+interface:
+  display_name: "得到课程内容与结构设计"
+  short_description: "得到品控手册课程内容与结构设计方法论，涵盖认知模型、挑战-解决方案结构、素材策展和Aha时刻设计"
+  default_prompt: "使用 $get3-course-content 来设计课程单课内容，构建认知模型，设计挑战-解决方案结构，进行素材策展和感性路标设计。"

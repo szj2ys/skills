@@ -3,11 +3,13 @@ name: pm-6-bytedance-marketing
 description: ByteDance-style algorithmic interest marketing playbook for designing product growth campaigns. Use when the user asks to optimize marketing for a product, design a growth campaign, build a content-driven go-to-market plan, or apply the FACT+ / A1-A5 / interest commerce methodology to improve acquisition, activation, or monetization. Triggers include interest marketing, 兴趣电商, FACT+, A1-A5, Douyin/TikTok campaign design, content matrix, KOL/influencer strategy, brand-effect synergy, and campaign performance optimization.
 ---
 
-# ByteDance Algorithmic Interest Marketing Playbook (Flywheel Step 6)
+# ByteDance Algorithmic Interest Marketing Playbook (Flywheel Extension Module)
 
 This skill turns product/business context into an actionable growth campaign using the ByteDance marketing doctrine: **content-first, algorithmic distribution, and full-funnel user-asset operation**. It is decision-heavy; the goal is to choose the right marketing scene, not to produce decorative slides.
 
 ## 🌀 The Flywheel Connection
+This module extends the core 5-step product flywheel (pm-1 → pm-5) with a marketing execution layer. It is **not** a mandatory step in every cycle—invoke it only when the current cycle's goal explicitly includes marketing or growth campaigns.
+
 - **Upstream Input (from `pm-5-ab-tracking` or real telemetry)**: Validated user segments, winning messages/creative angles, baseline conversion rates, and guardrails.
 - **Downstream Output (to execution + back to `pm-1-funnel-diagnostic`)**: A concrete campaign brief with a chosen FACT+ scene, A1-A5 target, content/creator mix, media plan, and success metrics. After launch, results feed the next diagnostic loop.
 
@@ -86,7 +88,7 @@ Borrow the discipline from `pm-2-metric-guardrail`. A campaign is only valid if 
 
 | Layer | Example Metrics |
 |---|---|
-| North Star (business) | CAC, ROAS, GMV lift, paid-to-organic ratio, A4 conversion rate |
+| North Star (business) | CAC, ROAS, GMV per active user, paid-to-organic ratio, A4 conversion rate |
 | Funnel stage metrics | A1→A2 transition rate, A2→A3 engagement rate, A3→A4 conversion rate |
 | Content metrics | 3s/complete view rate, engagement rate, share rate, CTR |
 | Guardrails | Brand safety score, negative comment rate, refund/return rate, frequency cap |

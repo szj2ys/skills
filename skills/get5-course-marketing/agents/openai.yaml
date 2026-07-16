@@ -1,0 +1,4 @@
+interface:
+  display_name: "得到课程运营与推广"
+  short_description: "得到品控手册课程上新运营与推广方法论"
+  default_prompt: "使用 $get5-course-marketing 来设计课程上新运营方案，制作宣传物料，处理用户留言。"

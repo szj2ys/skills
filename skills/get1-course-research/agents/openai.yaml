@@ -1,0 +1,4 @@
+interface:
+  display_name: "得到课程选题与需求分析"
+  short_description: "得到品控手册课程选题与需求分析方法论"
+  default_prompt: "使用 $get1-course-research 来分析课程选题，评估隐性攸关者，并判断老师是否适合合作。"
