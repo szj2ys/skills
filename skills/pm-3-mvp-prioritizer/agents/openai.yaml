@@ -1,4 +1,4 @@
 default_prompt: Apply the pm-3-mvp-prioritizer to score our pending feature backlog
   and define our MVP scope.
-display_name: MVP Scoping & ICE Prioritization
+display_name: pm-3-mvp-prioritizer
 short_description: High-impact MVP scoping and ICE prioritization framework.

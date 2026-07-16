@@ -1,5 +1,5 @@
 default_prompt: Run the pm-1-funnel-diagnostic on our current user onboarding and checkout
   flows to identify where the friction is highest.
-display_name: Funnel Diagnostic & Leverage Mining
+display_name: pm-1-funnel-diagnostic
 short_description: Core ByteDance product diagnostic workflow for identifying business
   leverage points and defining conversion funnels.

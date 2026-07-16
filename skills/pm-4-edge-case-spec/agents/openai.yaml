@@ -1,4 +1,4 @@
 default_prompt: Generate a zero-ambiguity edge-case spec using Given/When/Then for
   our MVP features.
-display_name: Edge-Case Spec & Functional Zero-Ambiguity
+display_name: pm-4-edge-case-spec
 short_description: Zero-ambiguity functional specification and edge-case mapping.

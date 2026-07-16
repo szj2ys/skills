@@ -1,4 +1,4 @@
 interface:
-  display_name: "ByteDance Marketing Playbook"
+  display_name: "pm-6-bytedance-marketing"
   short_description: "Algorithmic interest marketing playbook"
   default_prompt: "Use $pm-6-bytedance-marketing to design a growth campaign based on the algorithmic interest marketing playbook."
