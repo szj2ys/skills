@@ -1,5 +1,5 @@
 interface:
-  display_name: "增长创意引擎"
+  display_name: "growth-ideas"
   short_description: "产品改进/盈利/获客想法的系统性蒸馏与验证"
   default_prompt: "用 $growth-ideas 帮我从现有产品信息里蒸馏出可验证的增长创意清单。"
 policy:
