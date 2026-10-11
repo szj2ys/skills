@@ -47,7 +47,7 @@ Example prompts:
 |---|---|---|
 | [commit](skills/commit/SKILL.md) | Review staged work and create one conventional commit. | `npx skills add szj2ys/skills -s commit -y` |
 | [commits](skills/commits/SKILL.md) | Split related work into atomic, reversible conventional commits. | `npx skills add szj2ys/skills -s commits -y` |
-| [create-branch](skills/create-branch/SKILL.md) | Create a correctly named working branch. | `npx skills add szj2ys/skills -s create-branch -y` |
+| [create-branch](skills/create-branch/SKILL.md) | Create a correctly named working branch and push it to the remote. | `npx skills add szj2ys/skills -s create-branch -y` |
 | [pull-requests](skills/pull-requests/SKILL.md) | Prepare and create a clear pull request. | `npx skills add szj2ys/skills -s pull-requests -y` |
 | [simplify](skills/simplify/SKILL.md) | Refine recently changed code for readability without changing behavior. | `npx skills add szj2ys/skills -s simplify -y` |
 
