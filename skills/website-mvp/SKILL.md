@@ -1,270 +1,159 @@
 ---
 name: website-mvp
-description: use when analysis a website or webapp to scope a minimum viable product (MVP) for the core user result, with a separate Launch Wrapper for conversion and retention
+description: "Use when given a website URL to scope an MVP by replicating its core pages, or when asked which core pages a site has. Triggers: analyze this site for an MVP, which core pages does this site have, what should I clone, build an MVP from this site, 模仿这个网站做 MVP, 核心页面, 复刻, MVP 范围. Delivers a Core Page Map (paid job | core routes | result) and a P0/P1/Defer scope first; differentiation is a later, parked phase."
 ---
 
-## Role
+# Website MVP
+
+## The one rule
+
+**Emit the Core Page Map before any analysis.** If the user still cannot name the core pages after
+your first screen, the report failed. Return exactly sections 1–8, in this order, nothing added.
+
+## Stance — 僵化 → 固化 → 形成自己的东西
+
+Faithfully replicate the target's core functional loop first (僵化), make that copy run end to end
+second (固化), differentiate only later (§ Parked). You are extracting which pages and flows to copy
+— not auditing the competitor and not hunting its problems.
+
+## Inputs — start from a URL
+
+The user hands you a site address. Missing input that would change the recommendation → state the
+assumption and continue; do not block. Never guess a route from memory.
+
+### Route discovery (verified — no single source is complete)
+
+1. `curl -sL <origin>/robots.txt`: collect every `Sitemap:` line **and** every `Allow:`/`Disallow:`
+   path token, then fetch each sitemap and parse `<loc>`. If a `<loc>` ends in `.xml` it is a
+   sitemap **index**, not a route — fetch it and parse again (mocklive.ai: root index → 12 locale
+   children, `en.xml` alone carries 337 routes). Sitemaps: notion.so 169, makeinterview.com
+   16, `duolingo.com/sitemap.xml` → 200 with 0 `<loc>`. Robots paths are free route evidence — on
+   makeinterview `/operator` and `/pass` are `Disallow`ed, absent from the sitemap and from every
+   rendered href, and still return 200. A disallowed-but-alive path is often the real app route.
+   If a `<loc>` ends in `.xml` it is a sitemap index, not a route — fetch it and parse *its* `<loc>`
+   as routes (mocklive.ai: root index → 12 locale children, `en.xml` alone = 337 routes).
+2. Take `href`s from the raw HTML **and** the rendered page (Playwright: `python3 -I` +
+   `playwright.sync_api`, browsers installed), then from each hub page so nested routes reach the
+   union. On makeinterview: raw HTML 9 page routes, rendered 8, sitemap 16 — none is complete alone.
+   Strip asset hrefs first (`/_next/static/*`, `favicon.ico`, images, `cdn-cgi`).
+3. Normalize: strip query and trailing slash, group by locale prefix, collapse `/en/*` and `/zh-CN/*`
+   into one set — here 19 live routes → 12 distinct paths, 8 after long-tail folds into its area row.
+   **Exception:** if hrefs carry `#/` or a page-defining query key, that is the router — keep it as
+   the path, or a hash-routed SPA collapses to a single `/`.
+4. Status-probe with redirects followed: `curl -sL -o /dev/null -w "%{http_code} %{url_effective}"`.
+   Drop only 4xx/5xx, then normalize on the **effective** URL — without `-L`, `/pricing` reports 301
+   and is a live route, and a `www.` paste 301s every candidate to the apex host. On a fallback SPA
+   every path returns 200, so 200 alone does not prove the route renders: check for post-render
+   content.
+5. Open each hub and count what it actually renders — e.g. a practice hub exposing `Interviews 14,
+   Exams 9, Roleplay 8, Speaking 3, Resume 4`. No visible count → `count not observed`; never
+   estimate, and never import another site's counts into this site's map.
+
+## 1. Core Page Map
+
+**Paid to do: <the job the user is buying> → Gets: <what they walk away with>** — one line above the
+table. If you cannot write it, you have not found the core yet.
+
+| Area (the paid job) | Core routes | Role (what the user gets + the observed flow) |
+|---|---|---|
+| <paid job> | <route-1>, <route-2> | `observed` — setup flow; result: <artifact> |
+
+One question classifies every discovered route:
+
+- Does the user **perform the paid job, or receive its result**, here? → **core** — a row in this table.
+- Does it only **authenticate or take money** to complete the job (arrival page, sign-in,
+  pricing, checkout)? → **wrapper** (§4), never in this table.
+- Neither — marketing, trust, SEO, legal, support content → **Defer** (§2).
+- A hub that routes *into* the paid job is core; a page that only markets it is not.
+
+Rules: one row per paid job, no route in two rows, long-tail folded into its job row, counts where
+observed. Label each row `observed` / `inference` / `open question`. Never claim a feature without an
+implementation path (route, API, or named build step) — no path → `open question`.
+
+## 2. Recommended MVP Scope
+
+Exactly three buckets, no preamble:
+
+1. **P0 — <primary job>-focused MVP**: every core route on the path hub → core product route →
+   result, plus the one state that proves value (`session state plus scored report/replay`), plus
+   one wrapper line each for the arrival page, sign-in and pricing so it can ship. Every core P0
+   route traces to a map row. One primary job, defaults over configuration, one working outcome over
+   a menu of half-finished ones.
+2. **P1 — one adjacent room**: best candidate, one alternative, one line of reason each
+   (*best `/roleplay` with one scenario; alt `/speaking` with one presentation room; add `/exams` only
+   if exam prep is the actual wedge*). A second area only if it is the wedge.
+3. **Defer**: long-tail SEO pages; all content/variant/category routes; every catalog beyond the
+   first working unit; multi-language; guides, comparisons, careers, legal beyond the minimum.
+   Fragments, not paragraphs.
+
+When the full catalog exceeds what can be cloned, P0 ships **one working path through it**, not a
+thin version of all of them.
+
+## 3. Core Loop Spec (僵化)
+
+For the P0 core routes only:
+
+- Flow line: `arrival → setup → core interaction → result → next action`.
+- Per transition: source, trigger, destination, preserved data, primary CTA, failure fallback.
+- States the copy must ship: empty, first-run, loading, partial, timeout/abort, resume.
+- Observed gates on the core path (e.g. the target forces sign-in at session start) appear as one
+  clause on the flow line — listed, never analyzed.
+- Per P0 route: delivery path (API / server-rendered / named build step) and one acceptance
+  criterion — no delivery path is an `open question`, not a plan.
+- Copy the observed behavior; do not improve it. Deviations go to the Parked addendum.
+
+**固化 gate** — only when a build was requested: the copy is done when every P0 route is reachable,
+the core interaction completes, the result survives a refresh, and timeout / network-error /
+duplicate-submit behave. A design-only report grows no build section.
 
-You are a skeptical product architect and growth-oriented MVP designer. Your job is to reduce a competitor-inspired product idea to the smallest set of pages, states, and transitions that can deliver the user's core result, prove value, convert a subset of users, and create a reason to return.
+## 4. Wrapper Surfaces — not core pages
 
-Do not copy a competitor's information architecture, sitemap, feature list, or navigation by default. Treat the competitor as observed evidence, not as a requirement. Do not skip it either: extract the decision-relevant funnel, including the free/paid boundary, paywall placement, paid unit, refund policy, retention surface, and credible complaints. Also identify what the target user does today instead, including manual workarounds, general assistants, spreadsheets, courses, or asking a friend.
+`/`, `/pricing`, `/signin`, checkout, entitlement: **these are not core pages** and never appear in
+§1. One table, one line each — `surface | minimum the P0 needs` — listed so they ship, deliberately
+shallow: no funnel math, paywall essay, or conversion-trigger justification unless the user asks
+after sections 1–5.
 
-## Inputs to Use
+## 5. Evidence
 
-I will provide some or all of the following:
+One line each, no paragraphs: `route | observation | date | confidence` — `observed` rows only.
+Counts and flows beat adjectives. No invented user evidence: no personas, testimonials, usage
+numbers, or demand signals you did not observe. Sitemap size, nav labels, and marketing copy are not
+demand.
 
-- Product idea and target user
-- Competitor URL(s) or screenshots
-- Existing route map, if any
-- Business model and pricing constraints
-- Available engineering budget and timeline
-- Available analytics or user evidence
-- Non-negotiable requirements
+## 6. Risks & Open Questions
 
-If a missing input materially changes the recommendation, state the assumption and continue. Do not block on questions unless the ambiguity prevents a responsible MVP decision.
+Max 5 bullets, each an `open question` plus what would answer it. No generic risk boilerplate
+("competitor may change pricing", "execution risk").
 
-## First-Principles Job
+## 7. Next Step
 
-Identify the user's real job in one sentence:
+The single next build or validation action.
 
-> When [trigger], the user wants to [make progress] so they can [avoid a cost or obtain an outcome].
+## 8. Verification Status
 
-Then identify the shortest causal chain from arrival to value:
+```
+Acceptance status: PASS | FAIL | UNVERIFIED | N/A — design-only
+Evidence: <URL / route / command behind live claims, or why no runtime path exists>
+assumed: <basis>   # every unsourced number
+```
 
-`arrival -> intent selection -> setup -> core interaction -> result -> next best action -> repeat`
+`N/A — design-only` only when no build was requested, and it must say why. Unsupported claims are
+`UNVERIFIED`, never `PASS`.
 
-Registration, login, pricing, checkout, billing, and entitlement delivery are **not part of the core causal chain**. Treat them only as separate Launch Wrapper requirements after the Core MVP proves its user result.
+## Report rules (anti-fluff)
 
-Every page or state must serve at least one of these purposes:
+- Max 3 visible sentences of prose per section; tables and bullets carry the rest.
+- One table answers one question; never list the same route twice in one report.
+- Never restate the user's brief or the target's marketing copy back to them.
+- Forbidden: TAM, feature-parity lists, marketese, generic best-practice advice, section headers
+  that exist only to be thorough.
+- Delete test: if removing a section would not change what the user builds, delete it.
+- Saved report: the harness HTML contract supplies page chrome (title, generated_at, charts,
+  confidence, evidence matrix); the body stays exactly sections 1–8, with §1 first — it *is* the
+  Key takeaway.
 
-1. Reduce time to first value
-2. Improve the quality of the core interaction
-3. Make the result more actionable
-4. Enable repeat use
+## Parked — later phase (silent unless asked)
 
-If a page does not serve one of these purposes, classify it as optional, deferred, or kill.
-
-## User Journey Requirements
-
-Map the full journey, not just page inventory:
-
-- How does the user enter?
-- What is the first meaningful action?
-- What information is required before the core interaction can start?
-- Which defaults can remove friction?
-- What happens during the core interaction?
-- What happens on empty, first-run, loading, partial, timeout, abort, network-error, and retry states?
-- Can an interrupted core interaction be resumed without losing the user's work?
-- What result does the user receive immediately afterward?
-- What is the next best action after the result?
-- Why would the user come back tomorrow?
-- Does the core journey contain any registration, login, pricing, checkout, or billing step? It must not.
-- Which transitions are likely to leak users?
-- Which pages are acquisition surfaces versus product surfaces?
-
-Represent states as states first. Create separate routes only when the user needs distinct navigation, sharing, persistence, or SEO behavior.
-
-For every transition between states or routes, specify the source state, trigger, destination state, preserved data/context/progress, primary CTA, failure fallback, and recovery path.
-
-Trace at least three complete journeys:
-
-1. First-time visitor → delivered core result
-2. Interrupted core interaction → recovered state → completed result
-3. Returning user → resumed progress or a new value-producing action
-
-Include browser back/refresh, expired session, duplicate submission, interrupted core work, timeout, and resume where applicable. Flag any transition that loses intent, forces unnecessary re-entry, creates a dead end, or promises an outcome the destination does not deliver.
-
-## Page Necessity Test
-
-For each proposed page, answer:
-
-- What user problem does it solve?
-- What causal step in the journey does it support?
-- What happens if it is removed?
-- Can its information be merged into another state?
-- Is it needed for first value or repeat use, or only for acquisition and packaging?
-- What is the cost of building and maintaining it?
-- What evidence would justify keeping it?
-
-Use these classifications:
-
-- **KEEP**: removal materially harms activation, completion, perceived usefulness, or repeat use.
-- **MERGE**: useful information, but no separate route or screen is justified.
-- **DEFER**: valuable for acquisition, trust, billing, or later growth, but not required for the first user result.
-- **KILL**: no credible causal role, high complexity, or no measurable acceptance signal.
-
-Any pricing, registration, login, checkout, billing, or account-settings surface is automatically **DEFER → Launch Wrapper**. It must never be classified as `KEEP` or `MERGE` in the core page map.
-
-## MVP Scope Rules
-
-- Choose one primary user job and one primary wedge.
-- Build the smallest end-to-end value loop before adding adjacent rooms, catalogs, SEO pages, or team features.
-- Keep the Core MVP within 60 hours, with no more than three P0 slices and no P0 slice over 10 hours.
-- Every P0 slice must specify the user trigger, frontend states, backend flow, external API/data source, output, failure fallback, acceptance criteria, and estimated hours.
-- Never make registration, login, pricing, checkout, billing, entitlement delivery, or account settings part of the core interaction.
-- Prefer defaults over configuration.
-- Prefer one clear CTA over a multi-card catalog.
-- Prefer one working outcome over a broad menu of half-finished outcomes.
-- Core MVP Slices must not include registration, login, pricing, checkout, billing, account settings, or entitlement delivery.
-- Those surfaces belong only to **Launch Wrapper**, after the Core MVP passes its user-result gate.
-- Specify abort, timeout, partial-result, resume, empty, and first-run behavior for the core interaction.
-- Record cost and quota constraints outside the core map; commercial packaging belongs only to **Launch Wrapper**.
-- Do not claim a feature exists unless the implementation path is present or explicitly planned.
-
-## Conversion and Retention Design — Launch Wrapper Only
-
-This section is outside the Core MVP. It must not add pages, states, or P0 slices to the core map. Keep it separate so commercial packaging cannot silently become product scope.
-
-Design the business loop explicitly:
-
-`traffic entry -> first value -> proof of usefulness -> conversion trigger -> paid action -> entitlement delivery -> repeat loop`
-
-Specify:
-
-- Entry sources
-- First-value moment
-- Activation event
-- Conversion trigger
-- Payment moment
-- Paid unit and the event that proves delivery
-- State after successful charge and failed delivery
-- Retention mechanism
-- Re-entry path
-- Referral or share artifact, if justified
-
-The core retention loop must work without login, pricing, or payment. If retention depends on an account or paid entitlement, mark that dependency as a Launch Wrapper risk rather than a core feature.
-
-Retention must come from an observed or hypothesized user reason to return, such as:
-
-- A scheduled event or deadline
-- A sequence of practice sessions
-- A measurable improvement target
-- A saved history or progress record
-- A team workflow
-- A reusable artifact
-
-Name exactly one returning-user event and the artifact, balance, history, deadline, or progress record that carries it. Do not use generic retention advice such as “send notifications” without linking it to a user goal and a trigger.
-
-Before designing retention, identify the natural recurrence pattern of the user's job: trigger, expected interval, returning action, value delivered on return, and minimum state that must persist. Distinguish product-driven recurrence from manufactured engagement. If repeat use is not intrinsic, choose a credible alternative such as referral, sharing, expansion, or successful one-time completion. Build history, reminders, or notifications only when they enable a validated return behavior.
-
-For every conversion trigger, state the value already demonstrated, the additional value the paid action unlocks, why this is the lowest-friction credible payment moment, evidence supporting that timing, and a comparison with at least one earlier or later trigger when feasible.
-
-Measure the complete funnel:
-
-`eligible visitors -> activated users -> paywall exposure -> checkout start -> successful payment -> entitlement delivery -> retained paid users`
-
-Include refund, cancellation, support burden, and repeat-use guardrails. Treat paywall position as a hypothesis until tested.
-
-## Ablation Experiments
-
-Design focused ablation experiments before recommending a final page map. Each experiment must include:
-
-- Hypothesis
-- Control and variant
-- Primary metric
-- Guardrail metric
-- Sample or stopping rule
-- Decision rule
-- Expected engineering cost
-- Expected weekly volume and required sample
-- Event schema needed to compute the primary metric
-
-Rank candidate ablations by decision value, cost, and expected time to a usable answer. Select at least three only when they test distinct, consequential uncertainties; explicitly defer the rest.
-
-Typical ablations to consider:
-
-1. Direct-to-core versus multi-page navigation
-2. One-screen setup versus multi-step wizard
-3. Default persona/model versus selectable catalog
-5. Score-only result versus score plus actionable feedback
-6. Result without replay versus result with replay
-8. Single product wedge versus multiple product rooms
-9. Minimal trust page versus full comparison/guide content
-10. No SEO landing pages versus a small set of high-intent pages
-
-Wrapper-only experiments — guest-first versus sign-in-first, pricing placement, price level, free-quota ceiling, and paywall placement — must be reported separately and must not be counted as core-page ablations.
-
-For each selected experiment, define the eligible population, baseline assumption, minimum detectable effect or decision-relevant threshold, sample-size method, stopping rule, instrumentation, and what decision the result supports. Treat 5% as a candidate business threshold only when justified, not as a universal statistical rule. Never claim statistical validation from an underpowered test; label weak evidence as directional.
-
-Before proposing an A/B test, state whether the expected traffic can reach the required sample within eight weeks. If it cannot, replace the A/B test with a sequential manual test, concierge run, fake-door test, or payment-intent test, and label the result qualitative. In the separate **Launch Wrapper** experiment set, a pre-revenue MVP must test willingness to pay rather than only UX shape; this experiment must not alter the core page map or Core MVP budget.
-
-## Evidence Rules
-
-Separate:
-
-- **Observed**: directly visible in a live site, product, log, or user quote
-- **Inference**: a reasoned conclusion from observed evidence
-- **Open question**: an assumption that needs an experiment
-
-Do not treat:
-
-- Sitemap size as demand evidence
-- Navigation labels as user demand
-- Competitor marketing copy as proof of product quality
-- Number of features as evidence of product value
-- A plausible-sounding persona as user evidence
-
-For competitor analysis, record the live URL, route, observation, date, and confidence. Flag single-source claims.
-
-Classify every proposed core page and interaction separately from every wrapper-only paywall and packaging mechanism as:
-
-1. Necessary for the user's job
-2. A broadly established interaction convention
-3. A competitor-specific implementation
-4. An unvalidated product hypothesis
-
-Do not reproduce competitor-specific structure, copy, visual expression, or interaction sequences merely because they exist. When adopting a similar mechanism, state the user problem, supporting evidence, and why it fits this product. Produce a differentiation matrix covering target job, time to value, core interaction, result quality, paid unit, and return mechanism. Identify one testable advantage or state that differentiation remains unproven.
-
-## Output Contract
-
-For a commercial or MVP decision, return these sections in this exact order:
-
-1. **Judgment**: one-sentence recommendation and confidence
-2. **Demand Evidence**
-3. **用户真实结果**
-4. **Source Matrix**
-5. **Buy/Crawl Decision**
-6. **Unit Economics**
-7. **Core User Result**
-8. **Differentiation Wedge**
-9. **Core Interaction Logic**: include the minimal page/state map and every user transition
-10. **Core Backend Logic**
-11. **Core MVP Slices**: include P0 hours, states, fallbacks, and acceptance criteria
-12. **Growth & Conversion Loop**: include entry, first value, conversion trigger, paid delivery, retention, and re-entry
-13. **Launch Wrapper**: login, payment, email, analytics, and deployment
-14. **Go/Kill Criteria**
-15. **Deferred and Killed Surfaces**
-16. **Ablation Experiment Plan**
-17. **Risks and Unknowns**
-18. **Next Validation Step**
-19. **Verification Status**
-
-`Core Interaction Logic` and `Core MVP Slices` must contain zero pricing, registration, login, checkout, billing, or entitlement-delivery surfaces. `Growth & Conversion Loop` and `Launch Wrapper` are explicitly out of core scope.
-
-`Verification Status` must include:
-
-- `Acceptance status: PASS | FAIL | UNVERIFIED | N/A — design-only`
-- The URL, route, command, log, or file evidence supporting live-artifact claims
-- `assumed: <basis>` for any unsourced number
-
-`N/A — design-only` is allowed only when no build was requested, and it must explain why no runtime path exists.
-
-Do not pad the answer with generic advice, feature parity, TAM claims, or a long list of pages copied from the competitor.
-
-## Acceptance Criteria
-
-When running this prompt, the agent must:
-
-- Identify the shortest causal path to user value
-- Explain why each retained page exists
-- Design at least three concrete ablation experiments
-- Include entry, transitions, conversion, and retention
-- Trace first-use, failure-recovery, and returning-user journeys end to end
-- Verify each core journey, including timeout, refresh, resume, partial result, and duplicate submission, with an evidence-backed `PASS`, `FAIL`, or `UNVERIFIED` status
-- When a Launch Wrapper is requested, justify conversion timing with value already demonstrated and a measurable wrapper-only funnel
-- Distinguish necessary, mergeable, deferred, and unnecessary surfaces
-- Keep every pricing, registration, login, checkout, billing, and entitlement surface out of the core page map and P0 slices
-- Provide measurable next validation steps
-- Avoid copying a competitor's architecture by default
-- State assumptions and evidence limitations clearly
-- Mark unsupported completion claims as `UNVERIFIED`, never `PASS`
+Differentiation wedge · demand evidence · unit economics · ablation experiments · growth and
+conversion loop · go/kill criteria. Run only after the P0 copy works (固化). If the user asks, add one
+short addendum after section 8 — max 3 lines, including any deviation from the copied flow.
