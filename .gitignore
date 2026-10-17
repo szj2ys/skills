@@ -2,4 +2,4 @@ skills-lock.json
 .agents/
 .claude/
 .DS_Store
-
+logs/

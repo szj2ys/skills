@@ -1,6 +1,6 @@
 ---
 name: analytics
-description: When the user wants to set up, improve, or audit analytics tracking and measurement. Also use when the user mentions "set up tracking," "GA4," "Google Analytics," "conversion tracking," "event tracking," "UTM parameters," "tag manager," "GTM," "analytics implementation," "tracking plan," "how do I measure this," "track conversions," "attribution," "Mixpanel," "Segment," "are my events firing," or "analytics isn't working." Use this whenever someone asks how to know if something is working or wants to measure marketing results. For A/B test measurement, see ab-testing.
+description: When the user wants to set up, improve, or audit analytics tracking and measurement. Also use when the user mentions "set up tracking," "GA4," "Google Analytics," "conversion tracking," "event tracking," "UTM parameters," "tag manager," "GTM," "analytics implementation," "tracking plan," "how do I measure this," "track conversions," "attribution," "Mixpanel," "Segment," "PostHog," "Clarity," "session replay," "埋点," "加统计," "are my events firing," or "analytics isn't working." Use this whenever someone asks how to know if something is working or wants to measure marketing results. For A/B test design, see pm-5-ab-tracking; for reading collected data, see data-review.
 metadata:
   version: 2.0.0
 ---
@@ -43,6 +43,15 @@ Before implementing tracking, understand:
 - Validate implementation
 - Monitor for issues
 - Clean data > more data
+- Identify the user on signup and login; reset the identity on logout
+
+### 5. Money Events Come From the Server
+- Purchase, refund, renewal and credit-grant events are sent by the server when the payment provider confirms them (webhook), keyed by the payment id
+- A success-page view is a page view, never the purchase event
+
+### 6. Recordings Are Private by Default
+- Session replay masks all inputs and user-generated content by default
+- Pages that show other people's data (shared documents, invoices, messages) are excluded from recording
 
 ---
 
@@ -289,21 +298,21 @@ dataLayer.push({
 
 ## Tool Integrations
 
-For implementation, see the [tools registry](../../tools/REGISTRY.md). Key analytics tools:
+Key analytics tools:
 
 | Tool | Best For | MCP | Guide |
 |------|----------|:---:|-------|
-| **GA4** | Web analytics, Google ecosystem | ✓ | [ga4.md](../../tools/integrations/ga4.md) |
-| **Mixpanel** | Product analytics, event tracking | - | [mixpanel.md](../../tools/integrations/mixpanel.md) |
-| **Amplitude** | Product analytics, cohort analysis | - | [amplitude.md](../../tools/integrations/amplitude.md) |
-| **PostHog** | Open-source analytics, session replay | - | [posthog.md](../../tools/integrations/posthog.md) |
-| **Segment** | Customer data platform, routing | - | [segment.md](../../tools/integrations/segment.md) |
+| **GA4** | Web analytics, Google ecosystem | ✓ | [ga4-implementation.md](references/ga4-implementation.md) |
+| **GTM** | Tag management for GA4 and pixels | - | [gtm-implementation.md](references/gtm-implementation.md) |
+| **Mixpanel** | Product analytics, event tracking | - | - |
+| **Amplitude** | Product analytics, cohort analysis | - | - |
+| **PostHog** | Open-source analytics, session replay | - | - |
+| **Segment** | Customer data platform, routing | - | - |
 
 ---
 
 ## Related Skills
 
-- **ab-testing**: For experiment tracking
-- **seo-audit**: For organic traffic analysis
-- **cro**: For conversion optimization (uses this data)
-- **revops**: For pipeline metrics, CRM tracking, and revenue attribution
+- **pm-5-ab-tracking**: For experiment design and its tracking spec
+- **data-review**: For reading the collected data and deciding the next change
+- **serp-seo** / **seo-launch**: For organic search intent and indexing

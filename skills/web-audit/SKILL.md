@@ -20,8 +20,8 @@ If you cannot measure it, say you could not measure it.
 - A user asks you to audit, review, or redesign a web page or app UI.
 - A user asks if a page is accessible, fast, readable, or SEO-friendly.
 - You are about to propose visual changes and want to know what is actually broken first.
-- Not for: pure technical SEO crawling (`seo-audit`), Lighthouse-score chasing
-  (`web-performance-optimization`), or greenfield design with no existing page.
+- Not for: pure technical SEO and indexing (`seo-launch`, `serp-seo`), Lighthouse-score
+  chasing, or greenfield design with no existing page.
 
 ---
 

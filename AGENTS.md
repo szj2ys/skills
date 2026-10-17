@@ -2,7 +2,7 @@
 
 ## Project Identity
 
-This is **szj2ys/skills** — a personal skills library for AI agents. Each subdirectory is a self-contained skill with a `SKILL.md`.
+This is **szj2ys/skills** — a personal skills library for AI agents. Each `skills/<name>/` directory is a self-contained skill with a `SKILL.md` whose frontmatter `name` matches the directory. Index every added or removed skill in README.md, and run `python .github/scripts/validate_skills.py` (CI runs it on push).
 
 ## Skill Home Rule
 
