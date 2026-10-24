@@ -19,7 +19,7 @@ Target user (who, what they want, which device), entry point (the URL they arriv
 
 ## 2. Walk it — real browser, mobile first
 
-Mobile viewport with touch first, then desktop. Check the software keyboard covering inputs, orientation, real gestures where used. Label emulation versus a physical device. After each step record action, expectation, observation and a screenshot; choose the next step from what the screen offers.
+Mobile viewport with touch first, then desktop. For a harness PASS, record the desktop pass as the journey `desktop` list (website-experience.md §2.7: `viewport`, `action`, `observed`, own screenshot); a passing build is not a walkthrough. Check the software keyboard covering inputs, orientation, real gestures where used. Label emulation versus a physical device. After each step record action, expectation, observation and a screenshot; choose the next step from what the screen offers.
 
 ## 3. Break it on purpose
 
