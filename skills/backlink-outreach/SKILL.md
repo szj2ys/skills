@@ -43,7 +43,7 @@ Write copy specific to each site whose claims, category and pricing match the cu
 
 Before submitting, name who approves the listing (directory editor, list maintainer, moderator) and what they check, from the site's submission rules and the entries it accepted or rejected. List the 3–5 objections that reviewer most likely raises (dead or thin product, no pricing, unclear data handling, duplicate of an existing entry, wrong category) and answer each in the submission with evidence: a demo GIF or a link that works logged out, real numbers, the price, a privacy or data-handling line.
 
-Captcha, phone verification, payment or identity checks → `blocked — owner must <action>`; move to the next site. An uncertain result (timeout after submit) is checked against the receipt or the site before retrying.
+A human check (captcha, Cloudflare challenge, phone code at signup) → `blocked — human check (<kind>)`: never solve, bypass or outsource it; batch these rows for the owner's weekly digest instead of interrupting. Payment or identity checks → `blocked — owner must <action>`. Move to the next site. An uncertain result (timeout after submit) is checked against the receipt or the site before retrying.
 
 ## Ledger columns
 
