@@ -25,6 +25,8 @@ Rank by audience fit and evidence of people asking; effort and cost count agains
 
 Native format and tone: a useful answer, a build story, a tool shared where it is relevant. Lead with the problem and the result, disclose that you made it, and use only claims the product supports. Different text for each channel.
 
+Before posting, list the 3–5 objections this audience most likely raises, taken from the channel's rules and the top comments on similar past posts (for example "just a wrapper", "what does it cost", "where does my data go", "where is the demo"). Answer each in the post itself with evidence: a demo GIF or a link that works logged out, real numbers, the price, how data is handled. Name who on the channel approves the post (subreddit mods, the Product Hunt or HN moderation, a group admin) and what they check, and meet that before posting.
+
 ## 4. Measure
 
 Give each post its own UTM link where the channel allows links; otherwise use native metrics and referrers. Before posting, open the link logged out on a phone with a test identity, complete the core task in a sandbox, and see the visit attributed in analytics. Afterwards read visits, signups, first value and payments per channel.
