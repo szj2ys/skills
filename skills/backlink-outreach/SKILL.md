@@ -1,6 +1,6 @@
 ---
 name: backlink-outreach
-description: Find, choose and submit backlinks one qualified site at a time — 外链, 发外链, 挖外链, backlink building, directory and launch-site submissions, blog comments, guest posts (write for us), Google footprint searches (inurl:), automated backlink discovery with SERP and DR APIs — keeping a ledger so nothing is submitted twice.
+description: Find, choose and submit backlinks one qualified site at a time — 外链, 发外链, 挖外链, backlink building, directory and launch-site submissions, blog comments, guest posts (write for us), Google footprint searches (inurl:), competitor backlinks (反查竞品外链) through free APIs, automated backlink discovery with SERP and DR APIs — keeping a ledger so nothing is submitted twice.
 ---
 
 # Backlink Outreach
@@ -38,16 +38,31 @@ When the named lists run dry, or to find openings competitors have not used, sea
 | Directories and resource pages | `<kw> inurl:resources` · `<kw> inurl:links "submit"` · `<kw> "submit a tool"` | Pages built to list tools; many have a submit form. |
 | Guest posts | `<kw> "write for us"` · `<kw> "guest post guidelines"` · `<kw> "contribute" inurl:write-for-us` | Blogs that publish outside articles, with their rules. |
 
-Run the queries in a real browser session (in the user's harness: the owner's Vivaldi through `scripts/chrome-session/cdp_client.py`, one background tab, a few seconds between queries) or a SERP API; plain HTTP requests to Google get a JavaScript wall. An "unusual traffic" page is a human check (see Submit); slow down, and switch to a SERP API if it repeats. Record the query in the ledger note, so later runs learn which footprints produce `live` links.
+Run the queries in a real browser session (in the user's harness: the owner's Vivaldi through `scripts/chrome-session/cdp_client.py`, one background tab, a few seconds between queries) or a SERP API; plain HTTP requests to Google get a JavaScript wall. Google rate-limits these searches fast (2026-10-29: an "unusual traffic" page after about 8 queries in a few minutes from one browser); space queries out, treat the page as a human check (see Submit), and switch to a SERP API for volume. Record the query in the ledger note, so later runs learn which footprints produce `live` links.
 
 What the results are, measured 2026-10-29 on `inurl:blog "leave a reply" "ai image generator"`: 6 of 7 fetched posts still had an open comment form, and WordPress marks comment author links `rel="ugc nofollow"` by default. A comment link therefore passes little ranking value; its worth is the reader who clicks. Comment only on a post our product genuinely answers, with a comment that adds to it (a fact, a fix, a tested alternative), and link only where the comment needs it. Directory and guest-post results are leads, not approvals: each still goes through the gate, and guest posts follow the publisher's guidelines and disclose any affiliation.
+
+### Competitor backlinks — free routes
+
+Sites that already link to 2 or more competitors but not to us are the warmest candidates. Take 3–5 competitors from the SERP for the core keywords, collect their referring pages, keep the domains shared by two or more, drop those already in the ledger, and run the rest through the gate. Routes, all tested 2026-10-29 on `vectorizer.ai`:
+
+| Route | Key | What it gives |
+|---|---|---|
+| Ahrefs free Backlink Checker `ahrefs.com/backlink-checker/?input=<domain>&mode=subdomains`, then click "Check backlinks" | none | DR, backlink and linking-site totals with dofollow share, and the top referring pages (one per domain, about 20). Its Website Authority Checker gives the DR of any candidate. Run it in a real browser with the tab in front; it sits behind Cloudflare. |
+| Hacker News `hn.algolia.com/api/v1/search?query=<domain>&restrictSearchableAttributes=url` | none | Every HN submission of the competitor (Show HN threads, upvotes). |
+| GitHub `api.github.com/search/repositories?q=<domain>+in:readme` | none (10 queries/min; code search needs a token) | Repositories and awesome lists whose README names the competitor: candidates for a pull request. |
+| Google `"<domain>" -site:<domain>` | none | Pages that mention the competitor: reviews, comparisons, lists. Same rate limit as the footprints. |
+| Moz Links API (free tier about 2,500 rows a month; signup asks for a card, so the owner opens it) | `MOZ_API_KEY` | Referring domains, anchors, Domain Authority and Spam Score for any domain. |
+| Bing Webmaster Tools API | `BING_WEBMASTER_API_KEY` | Inbound links of our own verified sites only: confirms our submitted links are seen. |
+
+Common Crawl's host graph gives a domain's rank, not its referrers. In the user's harness, the claude-seo plugin's `moz_api.py` and `bing_webmaster.py` wrap the two keyed APIs; run them through `scripts/credentials.py run <KEY> -- ...`. A route that fails, or a key that does not exist yet, leaves the field `unknown` with the reason.
 
 ### Automating the loop
 
 An agent can run find → gate → draft → submit on its own when three inputs exist:
 
 1. **Search**: a SERP API key (Serper, SerpApi, Brave Search, DataForSEO) in the secret store, or the browser route above.
-2. **Authority and traffic**: an authority score (Open PageRank is free; Ahrefs, Moz, Semrush or DataForSEO are paid) and a traffic estimate (Similarweb, Semrush). Store keys only in the secret store; a missing key leaves the value `unknown` with the reason, never a guess.
+2. **Authority and traffic**: an authority score (free: Ahrefs' Website Authority Checker in a browser, the Moz free tier, Open PageRank; paid: Ahrefs, Semrush or DataForSEO are paid) and a traffic estimate (Similarweb, Semrush). Store keys only in the secret store; a missing key leaves the value `unknown` with the reason, never a guess.
 3. **The rule**: this skill. The numbers rank candidates that passed the gate; they never pass a candidate that failed it, and a high score never excuses an irrelevant or spammy page.
 
 Posting stays one site at a time, within the authorization below, with copy written for that page. Bulk or templated comments, links in unrelated posts and paid guest posts without disclosure are link spam under Google's spam policies: they earn nothing and can cost the site its rankings.
