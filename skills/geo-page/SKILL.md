@@ -42,6 +42,18 @@ Hinting which page is ours voids the round. No separate judge reachable → read
 
 Run the site and fetch the page: status 200, title, H1, canonical, valid schema, content in raw HTML, links resolve, mobile render. A tool page also completes a representative input → correct output and handles one bad input.
 
+## 7. After it ships — submit, then ask the assistants
+
+1. Submit the live URL to Bing (IndexNow and URL Submission) before Search Console (seo-launch step 3).
+2. Put the live URL to each assistant you can reach — ChatGPT in a Temporary Chat, Doubao, Perplexity — in a fresh chat each, indexed or not: can you open this page (quote its title and one fact from it)? What three changes would make it more useful? Would you recommend it, and to whom?
+3. Then ask the page's question with no URL and no brand (a blind query) and note whether the answer cites the site.
+4. A read counts only when the quote matches the live page; a refusal or a title guessed from the URL is "not read".
+5. Check each suggestion against the page's evidence: apply what is right, drop what is wrong with the reason. A suggestion for another repo goes to its owner.
+
+In the user's harness, `scripts/indexnow_daily.py publish <site> --url <url>` does steps 1–4 for a new page; `scripts/ai_page_probe.py ask <url>` probes one page by hand, and the answers are kept verbatim per site.
+
+These chats are agent-run at the user's request (2026-11-08) for pages you published. Other reads of these assistants, such as demand research, follow find-demand's Data routes.
+
 ## Output
 
-URL · type · query · user problem · gap · judge results per round · page checks · site-level issues reported · backlog.
+URL · type · query · user problem · gap · judge results per round · page checks · submission receipts · each assistant's read, suggestions, recommendation and blind citation · suggestions applied or dropped · site-level issues reported · backlog.

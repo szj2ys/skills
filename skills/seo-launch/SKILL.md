@@ -7,7 +7,7 @@ description: Get a new site crawled and indexed at launch and set up the first 3
 
 ## The one rule
 
-**The pages meant for search are eligible to be indexed before launch; everything after is reported in three separate states:** technically eligible (verified now), submitted (receipt from the tool), indexed (observed in Search Console, with date).
+**The pages meant for search are eligible to be indexed before launch; everything after is reported in three separate states:** technically eligible (verified now), submitted (receipt from the tool), indexed (observed in Bing Webmaster Tools or Search Console, with date).
 
 ## Mode
 
@@ -28,7 +28,7 @@ List the acquisition pages meant for search. Share links, account pages, staging
 
 ## 3. Launch-day steps
 
-Search Console domain property (DNS TXT), sitemap submitted, home page and 2–3 money pages inspected with indexing requested. Bing Webmaster Tools (import from Search Console) and IndexNow where the host supports it.
+Bing comes first (the user, 2026-11-08: it helps ChatGPT find the pages). Bing Webmaster Tools (import from Search Console), the sitemap submitted there, IndexNow with its key file at the site root, and URL Submission for the home page and money pages. In the user's harness, `scripts/indexnow_daily.py publish <site> --url <url>` sends one new page through IndexNow and Bing URL Submission and puts it to the AI assistants (geo-page step 7); the daily job covers the rest of the sitemap. Then Search Console: domain property (DNS TXT), sitemap submitted, home page and 2–3 money pages inspected with indexing requested.
 
 ## 4. First 30 days
 
@@ -37,7 +37,9 @@ Search Console domain property (DNS TXT), sitemap submitted, home page and 2–3
 - **Week 3**: first brand profiles and directory listings (`backlink-outreach`).
 - **Week 4**: high impressions with low CTR → titles and descriptions (`serp-seo`).
 
-Each week compare indexed with submitted. A plan names the person or job that runs each check; it counts as active monitoring only after the first run is observed.
+Each week compare indexed with submitted, Bing's count (Bing Webmaster Tools, crawl stats) beside Google's. A plan names the person or job that runs each check; it counts as active monitoring only after the first run is observed.
+
+After day 30 the checks keep going: a page can lose its traffic, its index entry or the assistants' reading at any time. In the user's harness, `scripts/decline_watch.py` re-checks every sitemap page daily and lists declining pages, with the evidence and the steps, in `scripts/ai_page_probe.py findings <site>`.
 
 ## Output
 
