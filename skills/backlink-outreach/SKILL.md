@@ -62,7 +62,7 @@ Common Crawl's host graph gives a domain's rank, not its referrers. In the user'
 An agent can run find → gate → draft → submit on its own when three inputs exist:
 
 1. **Search**: a SERP API key (Serper, SerpApi, Brave Search, DataForSEO) in the secret store, or the browser route above.
-2. **Authority and traffic**: an authority score (free: the Moz free tier, Open PageRank, or Ahrefs' Website Authority Checker looked up by the owner; paid: Ahrefs, Semrush or DataForSEO are paid) and a traffic estimate (Similarweb, Semrush). Store keys only in the secret store; a missing key leaves the value `unknown` with the reason, never a guess.
+2. **Authority and traffic**: an authority score (free: the Moz free tier, Open PageRank, or Ahrefs' Website Authority Checker looked up by the owner; paid: Ahrefs, Semrush or DataForSEO are paid) and a traffic estimate (Similarweb or Semrush, looked up by the owner). Store keys only in the secret store; a missing key leaves the value `unknown` with the reason, never a guess.
 3. **The rule**: this skill. The numbers rank candidates that passed the gate; they never pass a candidate that failed it, and a high score never excuses an irrelevant or spammy page.
 
 Posting stays one site at a time, within the authorization under Mode, with copy written for that page. Bulk or templated comments, links in unrelated posts, exact-match keyword anchors at scale and paid placements without `rel="sponsored"` or disclosure are link spam under Google's spam policies: they earn nothing and can cost the site its rankings.

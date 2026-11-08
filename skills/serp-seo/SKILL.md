@@ -15,11 +15,11 @@ An analysis or "why" request produces the matrix and recommendations. Edit code 
 
 ## 1. Product, then queries
 
-Learn the product, users, money pages, framework, rendering and routes. Derive 5–15 core queries yourself: product, feature, scenario, problem, category, `best X`, `X alternatives`, `X vs Y`, `X free`, `how to …`.
+Learn the product, users, money pages, framework, rendering and routes. Take 5–15 core queries from evidence first: Search Console queries with impressions, and the competitors' earning pages and open splits find-demand finds. Fill gaps from the product: feature, scenario, problem, category, `best X`, `X alternatives`, `X vs Y`, `X free`, `how to …`.
 
 ## 2. Observe each SERP
 
-Search for real. Per top result record rank, URL, page type (tool, product, category, comparison, list, guide, forum, video), title, H1, primary keyword (label it `inferred`) and what it gives the user. Note SERP features: People Also Ask, snippet, AI overview, video, forum results, related searches. Then answer: **what does the engine think this user wants?**
+Search for real, through a route find-demand allows. Per top result record rank, URL, page type (tool, product, category, comparison, list, guide, forum, video), title, H1, primary keyword (label it `inferred`) and what it gives the user. Note SERP features: People Also Ask, snippet, AI overview, video, forum results, related searches. Then answer: **what does the engine think this user wants?**
 
 Name the engine or tool used; a search API is not Google. A query whose results you could not see stays `unknown` and gets no intent action.
 

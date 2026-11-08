@@ -11,7 +11,7 @@ description: Create or improve one website search page — a blog post or a tool
 
 ## 1. Pick the query and the URL
 
-Use Search Console if available, otherwise observed SERPs, People Also Ask and forums; name the tool used. The query needs demand evidence, a clear user problem and product relevance. Map the intent to existing URLs first: improve the page that already owns it; create a new page only when none should.
+Use Search Console if available, otherwise observed SERPs, People Also Ask and forums; name the tool used. Where competitors hold the head terms, take the query from find-demand: an open split beside their earning pages. The query needs demand evidence, a clear user problem and product relevance. Map the intent to existing URLs first: improve the page that already owns it; create a new page only when none should.
 
 Then write the **information gap** in one sentence — your own data, your own test, a product capability, a worked example that the current top results lack. No gap → pick another query.
 

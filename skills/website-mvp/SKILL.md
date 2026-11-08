@@ -1,6 +1,6 @@
 ---
 name: website-mvp
-description: "Use when given a website URL to scope an MVP by replicating its core pages, or when asked which core pages a site has. Triggers: analyze this site for an MVP, which core pages does this site have, what should I clone, build an MVP from this site, 模仿这个网站做 MVP, 核心页面, 复刻, MVP 范围. Delivers a Core Page Map (paid job | core routes | result) and a P0/P1/Defer scope first; differentiation is a later, parked phase."
+description: "Use when given a website URL to scope an MVP by replicating its core pages, or when asked which core pages a site has. Triggers: analyze this site for an MVP, which core pages does this site have, what should I clone, build an MVP from this site, 模仿这个网站做 MVP, 核心页面, 复刻, MVP 范围. Delivers a Core Page Map (paid job | core routes | result) and a P0/P1/Defer scope first; differentiation is a later, parked phase, except a search late entrant's split and output difference (find-demand)."
 ---
 
 # Website MVP
@@ -15,6 +15,9 @@ your first screen, the report failed. Return exactly sections 1–8, in this ord
 Faithfully replicate the target's core functional loop first (僵化), make that copy run end to end
 second (固化), differentiate only later (§ Parked). You are extracting which pages and flows to copy
 — not auditing the competitor and not hunting its problems.
+
+Exception: when the MVP will compete for the target's searches, choose the split, the output
+difference and the split's kill number with find-demand before scoping; they are not parked.
 
 ## Inputs — start from a URL
 
@@ -155,5 +158,6 @@ assumed: <basis>   # every unsourced number
 ## Parked — later phase (silent unless asked)
 
 Differentiation wedge · demand evidence · unit economics · ablation experiments · growth and
-conversion loop · go/kill criteria. Run only after the P0 copy works (固化). If the user asks, add one
+conversion loop · go/kill criteria. Run only after the P0 copy works (固化). The search exception in
+Stance is not parked. If the user asks, add one
 short addendum after section 8 — max 3 lines, including any deviation from the copied flow.

@@ -23,6 +23,7 @@ Example prompts:
 - `Which core pages does example.com have, and what should my MVP copy?` uses `website-mvp`.
 - `Convert report.md into a styled PDF.` uses `any2pdf`.
 - `Which URL on my site should rank for this search intent?` uses `serp-seo`.
+- `Which keywords and pages bring my competitors traffic, and which page should I build next?` uses `find-demand`.
 - `Audit this landing page and tell me what to fix.` uses `web-audit`.
 - `用罗胖体把这个素材写成稿.` or `把这段改成罗胖体` uses `luopang-writing`.
 
@@ -59,7 +60,7 @@ Which skill to reach for at each stage of building a website, from idea to growt
 | [pm-3-mvp-prioritizer](skills/pm-3-mvp-prioritizer/SKILL.md) | Scope an MVP and prioritize ideas with ICE when resources are limited. | `npx skills add szj2ys/skills -s pm-3-mvp-prioritizer -y` |
 | [pm-4-edge-case-spec](skills/pm-4-edge-case-spec/SKILL.md) | Write unambiguous functional specs, states, errors, and edge cases. | `npx skills add szj2ys/skills -s pm-4-edge-case-spec -y` |
 | [pm-5-ab-tracking](skills/pm-5-ab-tracking/SKILL.md) | Design A/B tests and the event-tracking specification needed to evaluate them. | `npx skills add szj2ys/skills -s pm-5-ab-tracking -y` |
-| [find-demand](skills/find-demand/SKILL.md) | Find and rank paid demand worth building, keeping "can we win" separate from "is it worth winning". | `npx skills add szj2ys/skills -s find-demand -y` |
+| [find-demand](skills/find-demand/SKILL.md) | Find and rank paid demand worth building, keeping "can we win" separate from "is it worth winning"; research competitors' keywords and earning pages and pick a late entrant's split. | `npx skills add szj2ys/skills -s find-demand -y` |
 | [pricing](skills/pricing/SKILL.md) | Decide value metric, plans, annual framing and upgrade moments with honest, computed numbers. | `npx skills add szj2ys/skills -s pricing -y` |
 | [systems-map](skills/systems-map/SKILL.md) | Explain a whole project as a system with evidence-labelled Excalidraw diagrams. | `npx skills add szj2ys/skills -s systems-map -y` |
 | [data-review](skills/data-review/SKILL.md) | Read real exports (GSC, PostHog, Stripe, recordings), reconcile them, and decide one next change. | `npx skills add szj2ys/skills -s data-review -y` |
