@@ -55,7 +55,7 @@ What free data cannot show — state it in the report body:
 
 ## Data routes
 
-Every route carries one status:
+Every route carries one status; a route missing from the table is not agent-run until its terms are read and it is added:
 
 - **agent-run**: terms read 2026-11-08; URLs and clauses are in the commit that added this table.
 - **owner-manual**: the owner looks it up by hand; agents list the domains and ask for the numbers.
@@ -82,7 +82,7 @@ Every route carries one status:
 
 ## Evidence
 
-- Every number carries its source, its date and a label: observed, estimate or inferred. A number you did not observe is `not found`.
+- Every number (a price, a count of ranking tools, a registration year) carries its source, its date and a label: observed, estimate or inferred. A number you did not observe is `not found`, and so is one an earlier agent run captured through a route that is not agent-run (saved Google, Trends or metasearch pages, a Similarweb export); list it for the owner to re-check.
 - User pain is a verbatim quote with a link.
 - Name the route you actually used. A search-API result is not "Google top 10".
 - A route that is not available is stated once; continue with the next route and mark the affected column.
