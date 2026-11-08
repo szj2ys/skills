@@ -39,7 +39,7 @@ Big sites holding the head terms prove that people pay; the terms are context, n
 
 The order is fixed: who → what they target → which pages earn → which split.
 
-1. **Who.** Competitors are the domains that rank for the paid job's queries, not the products that look alike. Take 10–20 queries (Search Console queries with impressions, the paid jobs, autocomplete splits), record each top 10 through a named search API and count domains: two or more queries make a competitor. Add the domains named by "X alternatives" and "X vs Y" pages and by AI answers. Lookalikes from similarity search or directories stay candidates until they rank. Sort them into giants (context), specialists and young winners (registered within about two years, ranking top 3); study the young winners first, because they show what wins at a young site's size now.
+1. **Who.** Competitors are the domains that rank for the paid job's queries, not the products that look alike. Take 10–20 queries (Search Console queries with impressions, the paid jobs, autocomplete splits), record each top 10 through a named search route and count domains: two or more queries make a competitor. Add the domains named by "X alternatives" and "X vs Y" pages and by AI answers. Lookalikes from similarity search or directories stay candidates until they rank. Sort them into giants (context), specialists and young winners (registered within about two years, ranking top 3); study the young winners first, because they show what wins at a young site's size now.
 2. **What they target.** robots.txt → sitemaps, or the site's own links when it has no sitemap → URL families. Each family is a keyword template (`/convert/<a>-to-<b>`, `/<format>-for-<app>`, `/for/<persona>`, `/alternative/<brand>`, `/compare/<a>-vs-<b>`); a page's slug, title or H1 gives its main keyword, labelled `inferred`. Families that grew in the last 60 days (lastmod) are current bets; a removed family or sitemap is a bet that failed. Page counts show effort, not success.
 3. **Which pages earn.** Per family: how often its pages recur across the sampled results (route, date), the query's volume (source, month), and the page's payment signal — where the paywall sits, plan prices, the checkout provider, and whether it sells a repeat job. Read each page as its user would: the job it finishes, the output and the app it is for, its limits, the free/paid line.
 4. **Which split.** Late entrant points 1–3 decide. Then serp-seo maps the page to one intent and geo-page writes it.
@@ -57,7 +57,7 @@ What free data cannot show — state it in the report body:
 
 Every route carries one status; a route missing from the table is not agent-run until its terms are read and it is added:
 
-- **agent-run**: terms read 2026-11-08; URLs and clauses are in the commit that added this table.
+- **agent-run**: terms read 2026-11-08; URLs and clauses are in the commit that added each row.
 - **owner-manual**: the owner looks it up by hand; agents list the domains and ask for the numbers.
 - **paid**: the user's decision; propose it with a sourced price and date.
 - **not available**: state the exact error once, continue with the next route, mark the column.
@@ -65,6 +65,7 @@ Every route carries one status; a route missing from the table is not agent-run 
 | Need | Route | Status | Limit |
 |---|---|---|---|
 | Who ranks for a query | Tavily or Exa search, top 10 per query | agent-run | that tool's sample, not Google's results |
+| Who ranks for a query | Codex web search, the agent's built-in hosted tool | agent-run | that tool's sample, not Google's results; its default cached mode reads an OpenAI index, not live pages |
 | Lookalikes | Exa findSimilar | agent-run | mostly sites without traffic |
 | What AI answers cite | Exa answer | agent-run | one engine's answer |
 | What AI answers cite | ChatGPT, Perplexity, Google's AI answers | owner-manual | OpenAI's terms forbid programmatic extraction; Perplexity can be unreachable |
@@ -82,9 +83,9 @@ Every route carries one status; a route missing from the table is not agent-run 
 
 ## Evidence
 
-- Every number (a price, a count of ranking tools, a registration year) carries its source, its date and a label: observed, estimate or inferred. A number you did not observe is `not found`, and so is one an earlier agent run captured through a route that is not agent-run (saved Google, Trends or metasearch pages, a Similarweb export); list it for the owner to re-check.
+- Every number (a price, a count of ranking tools, a registration year, a Search Console total) carries its source, its date or date range, and a label: observed, estimate or inferred. A number you did not observe is `not found`, and so is one an earlier agent run captured through a route that is not agent-run (saved Google, Trends or metasearch pages, a Similarweb export); list it for the owner to re-check.
 - User pain is a verbatim quote with a link.
-- Name the route you actually used. A search-API result is not "Google top 10".
+- Name the route you actually used. A search tool's sample is not "Google top 10".
 - A route that is not available is stated once; continue with the next route and mark the affected column.
 
 ## Demand test (each candidate)
