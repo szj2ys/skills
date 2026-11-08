@@ -84,6 +84,7 @@ Every route carries one status; a route missing from the table is not agent-run 
 ## Evidence
 
 - Every number (a price, a count of ranking tools, a registration year, a Search Console total) carries its source, its date or date range, and a label: observed, estimate or inferred. A number you did not observe is `not found`, and so is one an earlier agent run captured through a route that is not agent-run (saved Google, Trends or metasearch pages, a Similarweb export); list it for the owner to re-check.
+- A claim about the current state (an API error, an outage, a page's status) carries its source and date like a number; one copied from an earlier report keeps that report's date and says it was not re-checked.
 - User pain is a verbatim quote with a link.
 - Name the route you actually used. A search tool's sample is not "Google top 10".
 - A route that is not available is stated once; continue with the next route and mark the affected column.
@@ -110,4 +111,4 @@ Every route carries one status; a route missing from the table is not agent-run 
 3. For the top candidate: where the first 100 users come from before SEO ranks, the one-week validation step, its cost, and the number that would kill it.
 4. For competitor research: competitors (domain | queries ranked, n of N | route and date | age | size | type); keyword families per young winner (family | pages | newest lastmod | example URL | main keyword, `inferred`); earning pages (URL | function | main keyword, `inferred` | volume, source and month | payment signal); and the chosen split with its open/taken evidence and route, the output difference, and its kill number and date.
 
-Done when every candidate has both questions answered or marked unknown with what would answer it, every competitor names the route that found it, every test has a kill number, and no number lacks a source.
+Done when every candidate has both questions answered or marked unknown with what would answer it, every competitor names the route that found it, every test has a kill number, and a last read of the reply finds every number and current-state claim with its source and date (a Search Console total with its start and end dates).
