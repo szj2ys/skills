@@ -19,7 +19,7 @@ Collect 10–20 questions from real sources first (search queries, community thr
 
 ## 2. Crawler access — by purpose
 
-Classify each provider's crawlers from its current docs into search/answer retrieval (OAI-SearchBot, PerplexityBot, Bingbot), user-triggered fetch (ChatGPT-User, Perplexity-User), and training (GPTBot, ClaudeBot, Google-Extended). Visibility needs the search and fetch classes; training access is the owner's separate policy decision and stays as set. Check the production robots.txt rules and CDN or firewall bot settings for each class. `curl -A` probes are synthetic; real access is shown by server or CDN logs of verified crawler hits. Core content must be in raw HTML; most AI crawlers do not run JavaScript.
+Classify each provider's crawlers from its current docs into search/answer retrieval (OAI-SearchBot, Claude-SearchBot, PerplexityBot, Bingbot, Googlebot), user-triggered fetch (ChatGPT-User, Claude-User, Perplexity-User), and training (GPTBot, ClaudeBot, Applebot-Extended, CCBot). Google-Extended spans two: it governs Gemini training and grounding in Gemini apps, so blocking it also keeps the site out of that grounding. Visibility needs the search and fetch classes and Google-Extended; training access is the owner's separate policy decision and stays as set. Check the production robots.txt rules and CDN or firewall bot settings for each class. `curl -A` probes are synthetic; real access is shown by server or CDN logs of verified crawler hits. Core content must be in raw HTML; most AI crawlers do not run JavaScript.
 
 ## 3. Plain identity
 
