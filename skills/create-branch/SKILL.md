@@ -1,10 +1,10 @@
 ---
 name: create-branch
-description: Create a correctly named Git branch from a task description as a linked git worktree, switch the session into it, and push it to the remote with upstream tracking.
+description: Create a correctly named Git branch from a task description as a linked git worktree under the repo's .worktrees directory, switch the session into it, and push it to the remote with upstream tracking.
 argument-hint: "describe your task for the new branch use to create a branch rather than doing the task itself, e.g. 'fix login crash on mobile' or 'add dark mode toggle'"
 ---
 
-Create a properly named Git branch from a user-provided description. By default the branch lives in a new **linked git worktree** (`git worktree add -b`), the session switches into it, and the branch is pushed to the remote with upstream tracking. The repository is not copied.
+Create a properly named Git branch from a user-provided description. By default the branch lives in a new **linked git worktree** in `<repo>/.worktrees/`, which is excluded from tracking, the session switches into it, and the branch is pushed to the remote with upstream tracking. The repository is not copied.
 
 ## Platform
 
@@ -13,9 +13,7 @@ The command blocks below are POSIX (`sh`) and run under `sh`, `dash` and `bash`.
 - **macOS / Linux** — run them as written.
 - **Windows** — run them in **Git Bash** or **WSL**; that is what Claude Code's Bash tool uses on Windows. If PowerShell is the only shell, use the PowerShell block at the end.
 
-On Windows `$HOME` is `C:\Users\<you>`, so `work_dir` resolves to `C:\Users\<you>\Documents\worktrees\<repo>\<type>-<slug>`. Print that Windows spelling in the step 6 summary, not Git Bash's `/c/Users/...` form.
-
-The filesystem is case-insensitive on Windows and default macOS, so `Fix/X` and `fix/x` are the same branch name.
+The filesystem is case-insensitive on Windows and default macOS, so `Fix/X` and `fix/x` are the same branch name. Print the Windows spelling of paths in the summary, not Git Bash's `/c/Users/...` form.
 
 ## Workflow
 
@@ -44,37 +42,36 @@ Format: `<type>/<short-slug>`
 
 If the description is too generic ("fix something"), make it unique: append a date (`fix/misc-20260205`) or use `experiment/<date>-<brief-desc>`.
 
-### 3) Create the Worktree
+### 3) Create the Worktree and Switch Into It
 
-Run steps 3–4 in **one** shell invocation (a single Bash tool call): shell variables do not persist between calls.
+The worktree lives in `.worktrees/<type>-<short-slug>` under the main repository root. Never ask the user for a directory and never use another one. The directory is excluded locally so git never tracks it.
 
 ```bash
 type="<type>"
 short_slug="<short-slug>"
 new_branch="${type}/${short_slug}"
 
-# Main repository name, correct even when run from inside another worktree
-common_dir=$(git rev-parse --path-format=absolute --git-common-dir) \
-  || { echo "ERROR: not inside a git repository" >&2; exit 1; }
-repo_name=$(basename "$(dirname "$common_dir")")
-current_branch=$(git branch --show-current)
+common_dir=$(git rev-parse --path-format=absolute --git-common-dir)   || { echo "ERROR: not inside a git repository" >&2; exit 1; }
+main_root=$(dirname "$common_dir")
+work_dir="${main_root}/.worktrees/${type}-${short_slug}"
 
-work_dir="$HOME/Documents/worktrees/${repo_name}/${type}-${short_slug}"
+mkdir -p "$common_dir/info"
+grep -qxF '/.worktrees/' "$common_dir/info/exclude" 2>/dev/null   || echo '/.worktrees/' >> "$common_dir/info/exclude"
 
-if [ -e "$work_dir" ]; then
-  echo "ERROR: $work_dir already exists - pick a unique branch name (step 2)" >&2
-  exit 1
-fi
-mkdir -p "$(dirname "$work_dir")"
-
-# Create the branch from the current HEAD and check it out in the new directory
 git worktree add -b "$new_branch" "$work_dir" || exit 1
 git worktree list
 ```
 
-Write the target as `"$HOME/..."`, never a quoted `"~/..."`: a quoted tilde is a literal directory named `~`.
+Writing to `$common_dir/info/exclude` (the repository's local, uncommitted ignore file) covers the main checkout and every linked worktree, and never touches the tracked `.gitignore`. The line is added once; re-running is safe. Do not use `git add -f` on anything under `.worktrees/`.
 
-- The branch starts at the local `HEAD`, not the latest remote. If the local base may be stale, run `git fetch origin` first; this skill does not fetch or rebase.
+Then switch into it:
+
+- **Claude Code:** call `EnterWorktree` with `path` set to `work_dir` (the Windows spelling is fine). The path is registered in `git worktree list`, so it is accepted. Do not pass `name`: that would create a second worktree under `.claude/worktrees/`.
+- **Other agents or a plain shell:** `cd "$work_dir"` in every later command and print `work_dir` so the user can open it.
+
+Notes:
+
+- The branch starts at the local `HEAD`, not the latest remote. If the base may be stale, run `git fetch origin` first; this skill does not fetch or rebase.
 - A worktree contains tracked files only. Uncommitted changes and untracked or ignored files (`.env`, `node_modules`, build output) stay in the original checkout. Tell the user when the original has uncommitted changes, and that dependencies must be reinstalled in the new directory. If the user wants those files carried over, use the copy fallback below.
 - If the branch name already exists, `git worktree add -b` fails. Re-generate the name (step 2); never pass `-B` or `--force`.
 
@@ -104,21 +101,14 @@ fi
 - This step never passes `--force`. A rejected `non-fast-forward` or an unreachable `origin` exits non-zero, so the summary never claims a push that did not happen.
 - If `origin` is an empty repo (first push ever), the full history transfers and git prints nothing until it finishes. Re-run with `git push --progress` and a long timeout rather than touching credential or proxy config.
 
-### 5) Switch Into the Worktree
+Confirm with `git branch --show-current` and `pwd` from the new location.
 
-Switching is part of the default behavior; do it after the push.
-
-- **Claude Code:** call the `EnterWorktree` tool with `path` set to `work_dir` (the Windows spelling is fine). The path is already registered in `git worktree list`, so it is accepted, and the session's working directory moves there. Do not pass `name`, which would create a second worktree.
-- **Other agents or a plain shell:** `cd "$work_dir"` in every later command, and print `work_dir` so the user can open it.
-
-Then confirm with `git branch --show-current` and `pwd` from the new location.
-
-### 6) Summary Output
+### 5) Summary Output
 
 ```
 ✅ Created branch: <new_branch>
 📁 Worktree: <absolute work_dir> (session switched here)
-🔀 Based on: <current_branch>
+🔀 Based on: <base branch or ref>
 ☁️  Pushed to: <origin url> (upstream origin/<new_branch>)
 ```
 
@@ -134,6 +124,7 @@ if [ -f "$repo_root/.git" ]; then
   echo "ERROR: $repo_root is a linked worktree or submodule; run from the main checkout" >&2
   exit 1
 fi
+work_dir="$(dirname "$repo_root")/$(basename "$repo_root")-${type}-${short_slug}"
 [ -e "$work_dir" ] && { echo "ERROR: $work_dir already exists" >&2; exit 1; }
 mkdir -p "$work_dir" && cp -a "$repo_root/." "$work_dir" || exit 1
 cd "$work_dir" && git checkout -b "$new_branch" || exit 1
@@ -143,7 +134,7 @@ Then run step 4 unchanged and `cd` into the copy. On Windows, run `git config --
 
 ## Windows: PowerShell equivalent
 
-Fallback for when Git Bash is unavailable. It mirrors steps 3–4 only; the branch-name rules and the step 5 switch are identical.
+Fallback for when Git Bash is unavailable. It mirrors steps 3-4; the branch-name rules and the step 3 session switch are identical.
 
 ```powershell
 $type = "fix"; $short_slug = "empty-query-crash"    # generated in step 2
@@ -153,14 +144,14 @@ $common_dir = git rev-parse --path-format=absolute --git-common-dir
 if ($LASTEXITCODE -ne 0 -or -not $common_dir) {
   Write-Host "ERROR: not inside a git repository"; exit 1
 }
-$repo_name      = Split-Path (Split-Path "$common_dir".Trim() -Parent) -Leaf
-$current_branch = git branch --show-current
-$work_dir = Join-Path $HOME "Documents\worktrees\$repo_name\$type-$short_slug"
+$main_root = Split-Path "$common_dir".Trim() -Parent
+$work_dir  = Join-Path $main_root ".worktrees\$type-$short_slug"
 
-if (Test-Path $work_dir) {
-  Write-Host "ERROR: $work_dir already exists - pick a unique branch name"; exit 1
+$exclude = Join-Path "$common_dir".Trim() "info\exclude"
+New-Item -ItemType Directory -Force -Path (Split-Path $exclude) | Out-Null
+if (-not (Test-Path $exclude) -or -not (Select-String -Path $exclude -SimpleMatch -Pattern "/.worktrees/" -Quiet)) {
+  Add-Content -Path $exclude -Value "/.worktrees/"
 }
-New-Item -ItemType Directory -Force -Path (Split-Path $work_dir) | Out-Null
 
 git worktree add -b $new_branch $work_dir
 if ($LASTEXITCODE -ne 0) { exit 1 }
